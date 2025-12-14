@@ -264,7 +264,7 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
           {previewData && (
              <div className="grid gap-2">
               <label className="font-medium flex items-center gap-2"><MessageSquare className="w-4 h-4"/> Your Comment</label>
-              <Textarea value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Add your thoughts about this content..." />
+              <Textarea key={previewData.description} defaultValue={comment} onChange={(e) => setComment(e.target.value)} placeholder="Add your thoughts about this content..." />
             </div>
           )}
 
