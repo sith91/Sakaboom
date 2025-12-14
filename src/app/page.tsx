@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { Plus, Filter, ArrowDownUp, Flame, Zap, Search, LogIn, User } from 'lucide-react';
+import { Plus, Filter, ArrowDownUp, Flame, Zap, Search, LogIn, User, X } from 'lucide-react';
 import { initialPosts, categories, trendingTags } from '@/lib/data';
 import type { Post } from '@/lib/types';
 import AppHeader from '@/components/app/header';
 import PostCard from '@/components/app/post-card';
 import AppSidebar from '@/components/app/sidebar';
 import SubmitPostDialog from '@/components/app/submit-post-dialog';
+import AdvancedFilterDialog from '@/components/app/advanced-filter-dialog';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
@@ -19,6 +20,8 @@ export default function TrendifyPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortMethod, setSortMethod] = useState('trending');
   const [isSubmitDialogOpen, setSubmitDialogOpen] = useState(false);
+  const [isFilterDialogOpen, setFilterDialogOpen] = useState(false);
+  const [advancedTags, setAdvancedTags] = useState<string[]>([]);
   const [hydrated, setHydrated] = useState(false);
   const [user, setUser] = useState<any>(null); // Placeholder for user state
 
@@ -52,7 +55,17 @@ export default function TrendifyPage() {
         post.tags.some(tag => tag.toLowerCase().includes(activeCategory.toLowerCase()))
       );
     }
+    
+    // Advanced Tag Search (All tags must match)
+    if (advancedTags.length > 0) {
+      filteredPosts = filteredPosts.filter(post => 
+        advancedTags.every(advTag => 
+          post.tags.some(postTag => postTag.toLowerCase().includes(advTag.toLowerCase()))
+        )
+      );
+    }
 
+    // Simple Search (Any field can match)
     if (searchQuery) {
       const lowercasedQuery = searchQuery.toLowerCase();
       filteredPosts = filteredPosts.filter(post =>
@@ -75,7 +88,23 @@ export default function TrendifyPage() {
           return scoreB - scoreA;
       }
     });
-  }, [posts, activeCategory, searchQuery, sortMethod]);
+  }, [posts, activeCategory, searchQuery, sortMethod, advancedTags]);
+  
+  const handleApplyAdvancedFilter = (tags: string[]) => {
+    setAdvancedTags(tags);
+    setFilterDialogOpen(false);
+    if(tags.length > 0) {
+        toast({
+            title: "Filter Applied",
+            description: `Showing posts with tags: ${tags.join(', ')}`
+        })
+    } else {
+        toast({
+            title: "Filter Cleared",
+            description: "Advanced tag filter has been removed."
+        })
+    }
+  };
 
   const handleBoom = (postId: number) => {
     setPosts(prevPosts =>
@@ -158,15 +187,16 @@ export default function TrendifyPage() {
           posts={posts}
         />
         <main className="flex-1">
-          <div className="mb-5 flex items-center justify-between">
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-y-2">
             <div>
               <h1 className="text-2xl font-headline font-bold text-gray-800">{pageTitle}</h1>
               <p className="text-sm text-muted-foreground flex items-center gap-2"><Zap className="w-4 h-4 text-primary"/> {pageSubtitle}</p>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" className="hidden sm:flex">
+              <Button variant={advancedTags.length > 0 ? "default" : "outline"} className="hidden sm:flex" onClick={() => setFilterDialogOpen(true)}>
                 <Filter className="w-4 h-4 mr-2" />
                 Advanced Filter
+                {advancedTags.length > 0 && <Badge variant="secondary" className="ml-2">{advancedTags.length}</Badge>}
               </Button>
               <Button variant="outline" onClick={handleSortChange}>
                 <ArrowDownUp className="w-4 h-4 mr-2" />
@@ -175,6 +205,18 @@ export default function TrendifyPage() {
             </div>
           </div>
           
+          {advancedTags.length > 0 && (
+             <div className="mb-4 flex items-center gap-2 flex-wrap">
+                <h3 className="text-sm font-medium">Active Filters:</h3>
+                {advancedTags.map(tag => (
+                    <Badge key={tag} variant="secondary">{tag}</Badge>
+                ))}
+                <Button variant="ghost" size="sm" className="text-primary hover:text-primary" onClick={() => handleApplyAdvancedFilter([])}>
+                    <X className="w-4 h-4 mr-1"/> Clear All
+                </Button>
+            </div>
+          )}
+
           {displayedPosts.length > 0 ? (
             <div className="masonry-grid">
               {displayedPosts.map(post => (
@@ -226,6 +268,12 @@ export default function TrendifyPage() {
         open={isSubmitDialogOpen}
         onOpenChange={setSubmitDialogOpen}
         onPostSubmit={handleAddPost}
+      />
+      <AdvancedFilterDialog 
+        open={isFilterDialogOpen}
+        onOpenChange={setFilterDialogOpen}
+        onApplyFilter={handleApplyAdvancedFilter}
+        initialTags={advancedTags}
       />
     </div>
   );
