@@ -23,10 +23,12 @@ import {
   ImageIcon,
 } from 'lucide-react';
 import { Star } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import React from 'react';
 
 interface PostCardProps {
   post: Post;
-  onBoom: (id: number) => void;
+  onBoom: (id: number, isButtonBoom?: boolean) => void;
 }
 
 function getTimeAgo(timestamp: Date): string {
@@ -49,10 +51,26 @@ function getTimeAgo(timestamp: Date): string {
 export default function PostCard({ post, onBoom }: PostCardProps) {
   const platformInfo = platforms[post.platform];
 
+  const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Check if the click target is a button, a link, a badge, or inside one
+    const target = e.target as HTMLElement;
+    if (
+      target.closest('button') || 
+      target.closest('a') || 
+      target.closest('[data-tag-badge]') ||
+      target.closest('[data-boom-button-area]')
+    ) {
+      return;
+    }
+    onBoom(post.id, false); // This is a "view" boom, not from the button
+    window.open(post.url, '_blank', 'noopener,noreferrer');
+  };
+
   return (
     <Card
+      onClick={handleCardClick}
       className={cn(
-        'overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-1 flex flex-col',
+        'overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-1 flex flex-col cursor-pointer',
         post.isNew && 'glow-pulse',
         post.platform === 'instagram' && 'instagram-post-border'
       )}
@@ -101,6 +119,7 @@ export default function PostCard({ post, onBoom }: PostCardProps) {
               key={tag}
               variant={"secondary"}
               className="cursor-pointer"
+              data-tag-badge // Prevent card click
             >
               {tag}
             </Badge>
@@ -108,14 +127,14 @@ export default function PostCard({ post, onBoom }: PostCardProps) {
         </div>
       </CardContent>
       <CardFooter className="flex-col items-start p-4 pt-0">
-         <div className="flex justify-between items-center w-full mb-4">
+         <div className="flex justify-between items-center w-full mb-4" data-boom-button-area>
             <div className="flex items-center gap-2">
                 <Button
                     size="sm"
                     variant={post.isBoomed ? 'default' : 'outline'}
                     onClick={(e) => {
                         e.stopPropagation();
-                        onBoom(post.id);
+                        onBoom(post.id, true);
                     }}
                     className={cn("gap-1", post.isBoomed && "bg-boom text-white border-boom hover:bg-boom/90")}
                 >
