@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -47,6 +47,12 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
   const [previewData, setPreviewData] = useState<any>(null);
   const { toast } = useToast();
   const [user, setUser] = useState<any>(true); // Placeholder for user state, assume logged in
+
+  useEffect(() => {
+    if (previewData?.description) {
+      setComment(previewData.description);
+    }
+  }, [previewData]);
 
   const resetState = () => {
     setUrl('');
@@ -98,8 +104,7 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
         const { title, description, image } = metadataResult;
         
         const finalDescription = description || title || `A very interesting post from ${platforms[platformId].name}.`;
-        setComment(finalDescription);
-
+        
         const defaultImg = PlaceHolderImages.find(i => i.id === '12');
 
         setPreviewData({
@@ -264,7 +269,7 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
           {previewData && (
              <div className="grid gap-2">
               <label className="font-medium flex items-center gap-2"><MessageSquare className="w-4 h-4"/> Your Comment</label>
-              <Textarea key={previewData.description} defaultValue={comment} onChange={(e) => setComment(e.target.value)} placeholder="Add your thoughts about this content..." />
+              <Textarea value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Add your thoughts about this content..." />
             </div>
           )}
 
