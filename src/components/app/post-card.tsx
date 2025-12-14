@@ -50,13 +50,14 @@ function getTimeAgo(timestamp: Date): string {
 }
 
 const tagColorClasses = [
-  'bg-blue-100 text-blue-800 hover:bg-blue-200',
-  'bg-green-100 text-green-800 hover:bg-green-200',
-  'bg-yellow-100 text-yellow-800 hover:bg-yellow-200',
-  'bg-purple-100 text-purple-800 hover:bg-purple-200',
-  'bg-pink-100 text-pink-800 hover:bg-pink-200',
-  'bg-indigo-100 text-indigo-800 hover:bg-indigo-200',
+  'border-sky-500 text-sky-600 hover:bg-sky-50 bg-sky-50/50',
+  'border-emerald-500 text-emerald-600 hover:bg-emerald-50 bg-emerald-50/50',
+  'border-amber-500 text-amber-600 hover:bg-amber-50 bg-amber-50/50',
+  'border-violet-500 text-violet-600 hover:bg-violet-50 bg-violet-50/50',
+  'border-pink-500 text-pink-600 hover:bg-pink-50 bg-pink-50/50',
+  'border-indigo-500 text-indigo-600 hover:bg-indigo-50 bg-indigo-50/50',
 ];
+
 
 const getTagColor = (index: number) => {
     return tagColorClasses[index % tagColorClasses.length];
@@ -135,8 +136,9 @@ export default function PostCard({ post, onBoom, onTagClick }: PostCardProps) {
           {post.tags.map((tag, index) => (
             <Badge
               key={tag}
+              variant="outline"
               className={cn(
-                "cursor-pointer border-transparent",
+                "cursor-pointer",
                 getTagColor(index)
               )}
               data-tag-badge
