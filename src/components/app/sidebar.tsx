@@ -9,6 +9,7 @@ import { LineChart, Tag } from 'lucide-react';
 import AITrendPredictor from './ai-trend-predictor';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '../ui/scroll-area';
 
 interface AppSidebarProps {
   posts: Post[];
@@ -86,7 +87,11 @@ export default function AppSidebar({ posts, isPopover = false }: AppSidebarProps
   );
 
   if (isPopover) {
-    return <SidebarContent />;
+    return (
+      <ScrollArea className="h-[60vh] w-full">
+        <SidebarContent />
+      </ScrollArea>
+    );
   }
 
   return (
