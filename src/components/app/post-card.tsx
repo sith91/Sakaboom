@@ -27,8 +27,6 @@ import { Star } from 'lucide-react';
 interface PostCardProps {
   post: Post;
   onBoom: (id: number) => void;
-  onTagClick: (tag: string) => void;
-  activeTags: Set<string>;
 }
 
 function getTimeAgo(timestamp: Date): string {
@@ -48,7 +46,7 @@ function getTimeAgo(timestamp: Date): string {
   return 'Just now';
 }
 
-export default function PostCard({ post, onBoom, onTagClick, activeTags }: PostCardProps) {
+export default function PostCard({ post, onBoom }: PostCardProps) {
   const platformInfo = platforms[post.platform];
 
   return (
@@ -101,12 +99,8 @@ export default function PostCard({ post, onBoom, onTagClick, activeTags }: PostC
           {post.tags.map((tag) => (
             <Badge
               key={tag}
-              variant={activeTags.has(tag) ? "default" : "secondary"}
+              variant={"secondary"}
               className="cursor-pointer"
-              onClick={(e) => {
-                e.stopPropagation();
-                onTagClick(tag);
-              }}
             >
               {tag}
             </Badge>

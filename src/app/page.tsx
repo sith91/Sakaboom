@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { Plus, Filter, ArrowDownUp, Flame, Zap, Search, LogIn, User } from 'lucide-react';
-import { initialPosts, categories, trendingTags, filterTagGroups } from '@/lib/data';
+import { initialPosts, categories, trendingTags } from '@/lib/data';
 import type { Post } from '@/lib/types';
 import AppHeader from '@/components/app/header';
 import PostCard from '@/components/app/post-card';
@@ -17,7 +17,6 @@ export default function TrendifyPage() {
   const [posts, setPosts] = useState<Post[]>(initialPosts);
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeTags, setActiveTags] = useState<Set<string>>(new Set());
   const [sortMethod, setSortMethod] = useState('trending');
   const [isSubmitDialogOpen, setSubmitDialogOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
@@ -64,13 +63,6 @@ export default function TrendifyPage() {
       );
     }
 
-    if (activeTags.size > 0) {
-      const requiredTags = Array.from(activeTags);
-      filteredPosts = filteredPosts.filter(post =>
-        requiredTags.every(tag => post.tags.includes(tag))
-      );
-    }
-
     return filteredPosts.sort((a, b) => {
       switch (sortMethod) {
         case 'newest': return b.timestamp.getTime() - a.timestamp.getTime();
@@ -83,7 +75,7 @@ export default function TrendifyPage() {
           return scoreB - scoreA;
       }
     });
-  }, [posts, activeCategory, searchQuery, activeTags, sortMethod]);
+  }, [posts, activeCategory, searchQuery, sortMethod]);
 
   const handleBoom = (postId: number) => {
     setPosts(prevPosts =>
@@ -100,29 +92,6 @@ export default function TrendifyPage() {
         description: `You've ${post.isBoomed ? 'unboomed' : 'boomed'} the post.`,
       });
     }
-  };
-
-  const handleToggleTag = (tag: string) => {
-    setActiveTags(prev => {
-      const newTags = new Set(prev);
-      if (newTags.has(tag)) {
-        newTags.delete(tag);
-      } else {
-        newTags.add(tag);
-      }
-      return newTags;
-    });
-  };
-
-  const clearAllFilters = () => {
-    setActiveTags(new Set());
-    toast({ title: 'All filters cleared' });
-  };
-  
-  const handleSelectTrendingTag = (tag: string) => {
-    clearAllFilters();
-    setActiveTags(new Set([tag]));
-    toast({ title: `Filtered by: ${tag}` });
   };
 
   const handleAddPost = (newPostData: Omit<Post, 'id'>) => {
@@ -146,15 +115,8 @@ export default function TrendifyPage() {
     setSortMethod(sortOptions[nextIndex]);
   };
 
-  const pageTitle = activeTags.size > 0 
-    ? activeTags.size === 1 
-      ? `Filtered by: ${Array.from(activeTags)[0]}` 
-      : 'Multiple Filters Applied'
-    : "Discover What's Booming";
-    
-  const pageSubtitle = activeTags.size > 0
-    ? `Showing ${displayedPosts.length} posts`
-    : "Fresh posts glow for easy spotting";
+  const pageTitle = "Discover What's Booming";
+  const pageSubtitle = "Fresh posts glow for easy spotting";
 
   return (
     <div className="bg-background min-h-screen text-foreground">
@@ -180,28 +142,11 @@ export default function TrendifyPage() {
         </div>
       </div>
       
-      {activeTags.size > 0 && (
-        <div className="bg-card border-b py-3">
-          <div className="container mx-auto px-4 flex items-center gap-2 flex-wrap">
-            <h3 className="text-sm font-semibold flex items-center gap-2"><Filter className="w-4 h-4"/> Active Filters:</h3>
-            {Array.from(activeTags).map(tag => (
-              <Badge key={tag} variant="default" className="gap-1">
-                {tag}
-                <button onClick={() => handleToggleTag(tag)} className="rounded-full hover:bg-primary-foreground/20">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-              </Badge>
-            ))}
-            <Button variant="ghost" size="sm" onClick={clearAllFilters} className="ml-auto">Clear All</Button>
-          </div>
-        </div>
-      )}
-
       <div className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white py-2">
         <div className="container mx-auto px-4 flex items-center gap-2 overflow-x-auto scrollbar-hide">
           <h3 className="text-sm font-bold shrink-0 flex items-center gap-2"><Flame className="w-4 h-4"/> Booming Now:</h3>
           {trendingTags.map(tag => (
-            <Button key={tag.name} variant="ghost" size="sm" className="rounded-full shrink-0 bg-white/20 hover:bg-white/30 text-white" onClick={() => handleSelectTrendingTag(tag.name)}>
+            <Button key={tag.name} variant="ghost" size="sm" className="rounded-full shrink-0 bg-white/20 hover:bg-white/30 text-white">
               {tag.icon} {tag.name}
             </Button>
           ))}
@@ -210,10 +155,7 @@ export default function TrendifyPage() {
 
       <div className="container mx-auto flex max-w-[1400px] flex-col gap-5 p-4 lg:flex-row lg:py-5">
         <AppSidebar
-          activeTags={activeTags}
-          onToggleTag={handleToggleTag}
           posts={posts}
-          tagGroups={filterTagGroups}
         />
         <main className="flex-1">
           <div className="mb-5 flex items-center justify-between">
@@ -240,8 +182,6 @@ export default function TrendifyPage() {
                   key={post.id} 
                   post={post} 
                   onBoom={handleBoom} 
-                  onTagClick={handleToggleTag}
-                  activeTags={activeTags}
                 />
               ))}
             </div>
@@ -252,7 +192,6 @@ export default function TrendifyPage() {
                     <Search className="w-16 h-16 text-muted-foreground/50 mb-4" />
                     <h3 className="text-xl font-bold">No Posts Found</h3>
                     <p className="text-muted-foreground mt-2">Try adjusting your search or filter settings.</p>
-                    {activeTags.size > 0 && <Button onClick={clearAllFilters} className="mt-4">Clear Filters</Button>}
                   </>
                 ) : (
                   <div className="flex flex-col items-center justify-center text-center">

@@ -9,11 +9,6 @@ import {
   FlaskConical,
   Plane,
   GraduationCap,
-  MapPin,
-  Building2,
-  Utensils,
-  MountainSnow,
-  LucideIcon
 } from 'lucide-react';
 import { Instagram, Twitter, Youtube, Tiktok, Facebook, Linkedin } from '@/components/icons';
 
@@ -115,7 +110,7 @@ export const initialPosts: Post[] = [
     url: "https://www.youtube.com/watch?v=colombo-guide",
     isNew: false,
     isBoomed: true,
-hasVideo: true,
+    hasVideo: true,
     shares: 87,
     timestamp: new Date(Date.now() - 172800000), // 2 days ago
     views: "124k",
@@ -203,50 +198,6 @@ export const trendingTags: TrendingTag[] = [
   { name: 'Social Media', icon: '📲' },
   { name: 'Entertainment', icon: '🎬' },
   { name: 'Lifestyle', icon: '✨' },
-];
-
-export const filterTagGroups: FilterTagGroup[] = [
-    {
-        label: 'Location',
-        icon: MapPin,
-        tags: [
-            { name: 'Colombo', count: 12 },
-            { name: 'Dubai', count: 8 },
-            { name: 'New York', count: 15 },
-            { name: 'London', count: 10 },
-            { name: 'Tokyo', count: 7 },
-        ]
-    },
-    {
-        label: 'Accommodation',
-        icon: Building2,
-        tags: [
-            { name: 'Hotels', count: 18 },
-            { name: 'Restaurants', count: 24 },
-            { name: 'Resorts', count: 9 },
-            { name: 'Airbnb', count: 14 },
-        ]
-    },
-    {
-        label: 'Food & Drink',
-        icon: Utensils,
-        tags: [
-            { name: 'Fine Dining', count: 12 },
-            { name: 'Street Food', count: 16 },
-            { name: 'Cafes', count: 22 },
-            { name: 'Bars', count: 18 },
-        ]
-    },
-    {
-        label: 'Activities',
-        icon: MountainSnow,
-        tags: [
-            { name: 'Hiking', count: 14 },
-            { name: 'Shopping', count: 20 },
-            { name: 'Beaches', count: 16 },
-            { name: 'Museums', count: 11 },
-        ]
-    }
 ];
 
 export const popularSidebarTags: string[] = ['Travel', 'Food', 'Technology', 'Fashion', 'Photography'];
