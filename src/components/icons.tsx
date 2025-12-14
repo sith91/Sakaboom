@@ -6,7 +6,7 @@ export const LogoIcon = () => (
     <defs>
       <linearGradient id="paint0_linear_801_3" x1="13.8125" y1="93.75" x2="88.8541" y2="44.0833" gradientUnits="userSpaceOnUse">
         <stop stopColor="#FBBF24"/>
-        <stop offset="1" stopColor="#F97316"/>
+        <stop offset="1" stopColor="#000000"/>
       </linearGradient>
     </defs>
   </svg>
