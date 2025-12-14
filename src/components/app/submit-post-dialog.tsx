@@ -48,12 +48,6 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
   const { toast } = useToast();
   const [user, setUser] = useState<any>(true); // Placeholder for user state, assume logged in
 
-  useEffect(() => {
-    if (previewData?.description) {
-      setComment(previewData.description);
-    }
-  }, [previewData]);
-
   const resetState = () => {
     setUrl('');
     setComment('');
@@ -115,6 +109,7 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
           title: title || `Post from ${platforms[platformId].name}`,
           description: finalDescription
         });
+        setComment(finalDescription);
       } else {
         setDetectedPlatform('unknown');
         toast({
