@@ -57,7 +57,7 @@ export default function AppHeader({ onSearchChange, posts }: AppHeaderProps) {
           <Input
             type="search"
             placeholder="Search for booming content..."
-            className="w-full rounded-full bg-secondary/20 pl-8 md:w-[200px] lg:w-[320px]"
+            className="w-full rounded-full border-neutral-900 bg-secondary/20 pl-8 md:w-[200px] lg:w-[320px]"
             onChange={(e) => onSearchChange(e.target.value)}
           />
           <Popover>
