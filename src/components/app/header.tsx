@@ -46,7 +46,7 @@ export default function AppHeader({ onSearchChange, posts }: AppHeaderProps) {
 
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-navbar text-navbar-foreground border-border/20 shadow-sm">
+    <header className="sticky top-0 z-50 w-full border-b bg-background text-foreground shadow-sm">
       <div className="container mx-auto flex h-16 items-center gap-4 px-4 md:px-6">
         <Link href="/" className="flex items-center gap-2">
           <LogoIcon />
@@ -57,7 +57,7 @@ export default function AppHeader({ onSearchChange, posts }: AppHeaderProps) {
           <Input
             type="search"
             placeholder="Search for booming content..."
-            className="w-full rounded-full bg-background/80 text-foreground pl-8 md:w-[200px] lg:w-[320px]"
+            className="w-full rounded-full bg-secondary/20 pl-8 md:w-[200px] lg:w-[320px]"
             onChange={(e) => onSearchChange(e.target.value)}
           />
           <Popover>

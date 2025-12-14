@@ -57,8 +57,8 @@ export default {
           foreground: 'hsl(var(--card-foreground))',
         },
         navbar: {
-          DEFAULT: '#151515',
-          foreground: 'hsl(var(--primary-foreground))'
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))'
         },
         'boom': 'hsl(18 100% 61%)', // #ff6b35
       },
