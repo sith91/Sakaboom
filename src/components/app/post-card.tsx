@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { platforms } from '@/lib/data';
+import { platforms } from '@/lib/data.tsx';
 import type { Post } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import {
@@ -18,7 +18,6 @@ import {
   CheckCircle,
   User,
   ExternalLink,
-,
   PlayCircle,
   Users,
   ImageIcon,

@@ -232,7 +232,7 @@ export const filterTagGroups: FilterTagGroup[] = [
         icon: Utensils,
         tags: [
             { name: 'Fine Dining', count: 12 },
-            { name 'Street Food', count: 16 },
+            { name: 'Street Food', count: 16 },
             { name: 'Cafes', count: 22 },
             { name: 'Bars', count: 18 },
         ]

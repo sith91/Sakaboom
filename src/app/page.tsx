@@ -28,12 +28,12 @@ export default function TrendifyPage() {
   }, []);
 
   const categoryCounts = useMemo(() => {
-    const counts: Record<string, number> = { All: posts.length };
+    const counts: Record<string, number> = { All: initialPosts.length };
     categories.slice(1).forEach(cat => {
-      counts[cat.name] = posts.filter(p => p.tags.some(t => t.toLowerCase().includes(cat.name.toLowerCase()))).length;
+      counts[cat.name] = initialPosts.filter(p => p.tags.some(t => t.toLowerCase().includes(cat.name.toLowerCase()))).length;
     });
     return counts;
-  }, [posts]);
+  }, [initialPosts]);
 
   const displayedPosts = useMemo(() => {
     let filteredPosts = [...posts];

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/componentsui/badge';
 import { Progress } from '@/components/ui/progress';
-import { popularSidebarTags, platforms } from '@/lib/data';
+import { popularSidebarTags, platforms } from '@/lib/data.tsx';
 import { cn } from '@/lib/utils';
 import { LineChart, Tags } from 'lucide-react';
 import AITrendPredictor from './ai-trend-predictor';

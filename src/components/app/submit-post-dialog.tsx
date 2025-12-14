@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { platforms } from '@/lib/data';
+import { platforms } from '@/lib/data.tsx';
 import type { Post } from '@/lib/types';
 import { suggestRelevantTagsAction } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
@@ -143,7 +143,7 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
     });
   };
 
-this.handleGenerateTags = async () => {
+  const handleGenerateTags = async () => {
     if (!detectedPlatform || !comment) {
       toast({
         variant: "destructive",
@@ -250,7 +250,7 @@ this.handleGenerateTags = async () => {
             <div className="grid gap-2">
               <div className="flex justify-between items-center">
                 <label className="font-medium flex items-center gap-2"><Tags className="w-4 h-4"/> Tags</label>
-                <Button size="sm" variant="ghost" onClick={this.handleGenerateTags} disabled={isSuggestingTags}>
+                <Button size="sm" variant="ghost" onClick={handleGenerateTags} disabled={isSuggestingTags}>
                   {isSuggestingTags ? <Loader2 className="h-4 w-4 animate-spin mr-2"/> : <Wand2 className="h-4 w-4 mr-2"/>}
                   Suggest with AI
                 </Button>
@@ -260,7 +260,7 @@ this.handleGenerateTags = async () => {
                   <Badge key={tag} variant="default">
                     {tag}
                     <button onClick={() => handleRemoveTag(tag)} className="ml-1 rounded-full hover:bg-primary-foreground/20 p-0.5">
-                      <svg xmlns="http://wwwpackage.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/></svg>
                     </button>
                   </Badge>
                 ))}
