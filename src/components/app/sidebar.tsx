@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import type { Post, FilterTagGroup } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/componentsui/badge';
+import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { popularSidebarTags, platforms } from '@/lib/data.tsx';
 import { cn } from '@/lib/utils';
