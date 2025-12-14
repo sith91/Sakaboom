@@ -12,7 +12,7 @@
     --popover-foreground: 240 7% 14%;
     --primary: 0 0% 0%; /* Black */
     --primary-foreground: 0 0% 100%;
-    --secondary: 53 100% 58%; /* #FFE52A */
+    --secondary: 0 0% 100%; /* White */
     --secondary-foreground: 240 7% 14%; /* Darker primary */
     --muted: 240 4.8% 95.9%;
     --muted-foreground: 240 3.8% 46.1%;
@@ -35,7 +35,7 @@
     --popover-foreground: 0 0% 98%;
     --primary: 0 0% 0%; /* Black */
     --primary-foreground: 0 0% 100%;
-    --secondary: 53 100% 58%; /* #FFE52A */
+    --secondary: 0 0% 100%; /* White */
     --secondary-foreground: 240 7% 14%;
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
