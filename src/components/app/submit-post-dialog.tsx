@@ -15,7 +15,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { platforms } from '@/lib/data.tsx';
 import type { Post } from '@/lib/types';
-import { suggestRelevantTagsAction } from '@/app/actions';
+import { suggestRelevantTagsAction, identifyPlatformAction } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Link, Tags, MessageSquare, Image, Rocket, Wand2 } from 'lucide-react';
 import NextImage from 'next/image';
@@ -73,7 +73,7 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
   };
 
   const detectPlatform = async (url: string) => {
-    if (!url.trim()) {
+    if (!url.trim() || !url.startsWith('http')) {
       setDetectedPlatform(null);
       setPreviewData(null);
       return;
@@ -83,43 +83,59 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
     setPreviewData(null);
     setDetectedPlatform('Detecting...');
     
-    // Simulate API call for platform detection and metadata fetching
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    let platformId: string | null = null;
-    if (url.includes('instagram.com')) platformId = 'instagram';
-    else if (url.includes('twitter.com') || url.includes('x.com')) platformId = 'twitter';
-    else if (url.includes('youtube.com')) platformId = 'youtube';
-    else if (url.includes('tiktok.com')) platformId = 'tiktok';
-    else if (url.includes('facebook.com')) platformId = 'facebook';
-    else if (url.includes('linkedin.com')) platformId = 'linkedin';
+    try {
+      const { platform: platformId } = await identifyPlatformAction({ url });
 
-    if (platformId && platforms[platformId]) {
-      setDetectedPlatform(platformId);
-      
-      const mockCaption = "This is a fetched caption for the post. #awesome #content";
-      setComment(mockCaption);
+      if (platformId && platformId !== 'unknown' && platforms[platformId]) {
+        setDetectedPlatform(platformId);
+        
+        // This is still a simulation, but it's more dynamic.
+        // In a real app, you'd fetch metadata from the URL on the server.
+        const mockCaptions: Record<string, string> = {
+            instagram: "Living my best life with this amazing view! #blessed #travel",
+            twitter: "Just dropped a new hot take! 🔥 You won't believe what's happening in the tech world. #Tech #Breaking",
+            youtube: "Check out my new video! We unbox the latest gadget. Link in bio! #unboxing #techreview",
+            tiktok: "New dance challenge going viral! 💃🕺 #dancechallenge #fyp",
+            facebook: "Exciting news to share with all my friends and family! So grateful for this opportunity.",
+            linkedin: "Thrilled to announce my new role as Senior Innovator at a leading tech company. #career #professionaldevelopment"
+        };
+        const mockCaption = mockCaptions[platformId] || `A very interesting post from ${platforms[platformId].name}.`;
+        setComment(mockCaption);
+        
+        const img = PlaceHolderImages.find(i => i.id === '11');
+        const defaultImg = PlaceHolderImages.find(i => i.id === '12');
 
-      const img = PlaceHolderImages.find(i => i.id === '11');
-      const defaultImg = PlaceHolderImages.find(i => i.id === '12');
-
-      setPreviewData({
-        platform: platforms[platformId],
-        url: url,
-        image: platformId === 'instagram' ? img?.imageUrl : defaultImg?.imageUrl,
-        imageHint: platformId === 'instagram' ? img?.imageHint : defaultImg?.imageHint,
-        title: `Post from ${platforms[platformId].name}`,
-        description: mockCaption
-      });
-    } else {
-      setDetectedPlatform('unknown');
-      setPreviewData(null);
+        setPreviewData({
+          platform: platforms[platformId],
+          url: url,
+          image: platformId === 'instagram' ? img?.imageUrl : defaultImg?.imageUrl,
+          imageHint: platformId === 'instagram' ? img?.imageHint : defaultImg?.imageHint,
+          title: `Post from ${platforms[platformId].name}`,
+          description: mockCaption
+        });
+      } else {
+        setDetectedPlatform('unknown');
+        toast({
+            variant: "destructive",
+            title: "Unsupported Platform",
+            description: "We couldn't recognize this URL. Please paste a link from a supported social platform.",
+        });
+        setPreviewData(null);
+      }
+    } catch (error) {
+        setDetectedPlatform('unknown');
+        toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Could not analyze the URL. Please try again.",
+        });
+        setPreviewData(null);
+    } finally {
+        setIsLoading(false);
     }
-    
-    setIsLoading(false);
   };
 
-  const detectPlatformDebounced = useCallback(debounce(detectPlatform, 500), []);
+  const detectPlatformDebounced = useCallback(debounce(detectPlatform, 700), []);
 
   const handleTagInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && tagInput.trim()) {
@@ -240,6 +256,8 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
                 {platforms[detectedPlatform].icon}
                 <span>{platforms[detectedPlatform].name}</span>
               </div>
+            ) : detectedPlatform === 'unknown' ? (
+                <span className='font-semibold text-destructive'>Unsupported</span>
             ) : (
               <span>None</span>
             )}
