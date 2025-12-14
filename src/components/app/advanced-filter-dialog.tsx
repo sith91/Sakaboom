@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -9,42 +9,74 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  PopoverAnchor,
+} from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { X, Filter, Tag } from 'lucide-react';
+import { ScrollArea } from '../ui/scroll-area';
 
 interface AdvancedFilterDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onApplyFilter: (tags: string[]) => void;
   initialTags?: string[];
+  allTags: string[];
 }
 
 export default function AdvancedFilterDialog({ 
     open, 
     onOpenChange, 
     onApplyFilter,
-    initialTags = []
+    initialTags = [],
+    allTags = []
 }: AdvancedFilterDialogProps) {
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState<string[]>(initialTags);
+  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
 
   useEffect(() => {
     setTags(initialTags);
   }, [initialTags, open]);
 
+  const filteredSuggestions = useMemo(() => {
+    if (!tagInput) return [];
+    const lowercasedInput = tagInput.toLowerCase();
+    return allTags.filter(
+      (tag) =>
+        tag.toLowerCase().includes(lowercasedInput) &&
+        !tags.find(t => t.toLowerCase() === tag.toLowerCase())
+    ).slice(0, 5);
+  }, [tagInput, allTags, tags]);
+
+  const addTag = (newTag: string) => {
+    if (newTag && !tags.find(t => t.toLowerCase() === newTag.toLowerCase())) {
+      setTags([...tags, newTag]);
+    }
+    setTagInput('');
+    setSuggestionsOpen(false);
+  };
 
   const handleTagInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if ((e.key === 'Enter' || e.key === ',') && tagInput.trim()) {
       e.preventDefault();
-      const newTag = tagInput.trim();
-      if (!tags.find(t => t.toLowerCase() === newTag.toLowerCase())) {
-        setTags([...tags, newTag]);
-      }
-      setTagInput('');
+      addTag(tagInput.trim());
     } else if (e.key === 'Backspace' && !tagInput && tags.length > 0) {
       setTags(tags.slice(0, -1));
+    }
+  };
+  
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTagInput(e.target.value);
+    if (e.target.value.trim().length > 0) {
+      setSuggestionsOpen(true);
+    } else {
+      setSuggestionsOpen(false);
     }
   };
 
@@ -71,27 +103,56 @@ export default function AdvancedFilterDialog({
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-                <label htmlFor="tag-input" className="font-medium flex items-center gap-2"><Tag className="w-4 h-4"/> Tags</label>
+          <div className="grid gap-2">
+            <label htmlFor="tag-input" className="font-medium flex items-center gap-2"><Tag className="w-4 h-4"/> Tags</label>
+            <Popover open={suggestionsOpen} onOpenChange={setSuggestionsOpen}>
+              <PopoverTrigger asChild>
                 <div className="flex flex-wrap gap-2 p-2 border rounded-lg min-h-[40px] items-center">
-                    {tags.map(tag => (
+                  {tags.map(tag => (
                     <Badge key={tag} variant="secondary">
-                        {tag}
-                        <button onClick={() => handleRemoveTag(tag)} className="ml-1 rounded-full hover:bg-background/50 p-0.5">
+                      {tag}
+                      <button onClick={() => handleRemoveTag(tag)} className="ml-1 rounded-full hover:bg-background/50 p-0.5">
                         <X className="w-3 h-3" />
-                        </button>
+                      </button>
                     </Badge>
-                    ))}
-                    <Input
+                  ))}
+                  <Input
                     id="tag-input"
                     className="flex-1 border-none shadow-none focus-visible:ring-0 h-auto p-0 m-1 bg-transparent"
                     value={tagInput}
-                    onChange={(e) => setTagInput(e.target.value)}
+                    onChange={handleInputChange}
                     onKeyDown={handleTagInputKeyDown}
                     placeholder={tags.length === 0 ? "Type tags here..." : "Add more tags..."}
-                    />
+                    autoComplete="off"
+                  />
                 </div>
-            </div>
+              </PopoverTrigger>
+              <PopoverContent 
+                className="w-[--radix-popover-trigger-width] p-0" 
+                align="start"
+                onOpenAutoFocus={(e) => e.preventDefault()} // Prevent focus stealing
+              >
+                  {filteredSuggestions.length > 0 && (
+                    <ScrollArea className="max-h-40">
+                      <ul className="space-y-1 p-1">
+                        {filteredSuggestions.map((suggestion) => (
+                          <li
+                            key={suggestion}
+                            className="p-2 text-sm rounded-md cursor-pointer hover:bg-accent hover:text-accent-foreground"
+                            onMouseDown={(e) => { // use onMouseDown to avoid input blur
+                              e.preventDefault();
+                              addTag(suggestion);
+                            }}
+                          >
+                            {suggestion}
+                          </li>
+                        ))}
+                      </ul>
+                    </ScrollArea>
+                  )}
+              </PopoverContent>
+            </Popover>
+          </div>
         </div>
         <DialogFooter className="sm:justify-between">
             <Button onClick={handleClear} variant="ghost">Clear Filter</Button>

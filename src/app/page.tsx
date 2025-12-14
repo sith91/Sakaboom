@@ -46,6 +46,14 @@ export default function TrendifyPage() {
     });
     return counts;
   }, []);
+  
+  const allTags = useMemo(() => {
+    const tagSet = new Set<string>();
+    posts.forEach(post => {
+      post.tags.forEach(tag => tagSet.add(tag));
+    });
+    return Array.from(tagSet);
+  }, [posts]);
 
   const displayedPosts = useMemo(() => {
     let filteredPosts = [...posts];
@@ -274,6 +282,7 @@ export default function TrendifyPage() {
         onOpenChange={setFilterDialogOpen}
         onApplyFilter={handleApplyAdvancedFilter}
         initialTags={advancedTags}
+        allTags={allTags}
       />
     </div>
   );
