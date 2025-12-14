@@ -120,7 +120,7 @@ export default function TrendifyPage() {
 
   return (
     <div className="bg-background min-h-screen text-foreground">
-      <AppHeader onSearchChange={setSearchQuery} />
+      <AppHeader onSearchChange={setSearchQuery} posts={posts} />
 
       <div className="bg-card border-b">
         <div className="container mx-auto px-4">

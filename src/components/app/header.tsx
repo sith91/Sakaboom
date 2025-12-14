@@ -1,7 +1,7 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, LogIn, UserPlus, LogOut } from 'lucide-react';
+import { Search, LogIn, UserPlus, LogOut, LayoutDashboard } from 'lucide-react';
 import Link from 'next/link';
 import { LogoIcon, Facebook as FacebookIcon } from '@/components/icons';
 import { useToast } from '@/hooks/use-toast';
@@ -13,15 +13,19 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useState } from 'react';
+import AppSidebar from './sidebar';
+import { Post } from '@/lib/types';
 
 
 interface AppHeaderProps {
   onSearchChange: (query: string) => void;
+  posts: Post[];
 }
 
-export default function AppHeader({ onSearchChange }: AppHeaderProps) {
+export default function AppHeader({ onSearchChange, posts }: AppHeaderProps) {
   const { toast } = useToast();
   const [user, setUser] = useState<any>(null); // Placeholder for user state
 
@@ -48,7 +52,7 @@ export default function AppHeader({ onSearchChange }: AppHeaderProps) {
           <LogoIcon />
           <span className="text-xl font-bold font-headline text-primary">Trendify</span>
         </Link>
-        <div className="relative ml-auto flex-1 md:grow-0">
+        <div className="relative ml-auto flex items-center gap-2 md:grow-0">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             type="search"
@@ -56,6 +60,17 @@ export default function AppHeader({ onSearchChange }: AppHeaderProps) {
             className="w-full rounded-full bg-background pl-8 md:w-[200px] lg:w-[320px]"
             onChange={(e) => onSearchChange(e.target.value)}
           />
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="lg:hidden">
+                <LayoutDashboard className="w-4 h-4 mr-2" />
+                Dashboard
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80" align="end">
+              <AppSidebar posts={posts} isPopover={true} />
+            </PopoverContent>
+          </Popover>
         </div>
         <div className="flex items-center gap-2">
           {user ? (
