@@ -28,7 +28,7 @@ import React from 'react';
 
 interface PostCardProps {
   post: Post;
-  onBoom: (id: number, isButtonBoom?: boolean) => void;
+  onBoom: (id: number) => void;
 }
 
 function getTimeAgo(timestamp: Date): string {
@@ -62,7 +62,7 @@ export default function PostCard({ post, onBoom }: PostCardProps) {
     ) {
       return;
     }
-    onBoom(post.id, false); // This is a "view" boom, not from the button
+    onBoom(post.id); // This is a "view" boom
     window.open(post.url, '_blank', 'noopener,noreferrer');
   };
 
@@ -127,22 +127,12 @@ export default function PostCard({ post, onBoom }: PostCardProps) {
         </div>
       </CardContent>
       <CardFooter className="flex-col items-start p-4 pt-0">
-         <div className="flex justify-between items-center w-full mb-4" data-boom-button-area>
+         <div className="flex justify-between items-center w-full mb-4">
             <div className="flex items-center gap-2">
-                <Button
-                    size="sm"
-                    variant={post.isBoomed ? 'default' : 'outline'}
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        onBoom(post.id, true);
-                    }}
-                    className={cn("gap-1", post.isBoomed && "bg-boom text-white border-boom hover:bg-boom/90")}
-                >
-                    <span className={cn("transition-transform", post.isBoomed && "animate-ping absolute inline-flex h-full w-full rounded-full bg-boom opacity-75")}></span>
-                     <span className="relative">💥</span>
-                    Boom
-                </Button>
-                <span className="font-bold text-sm">{post.booms.toLocaleString()}</span>
+                <span className="font-bold text-sm flex items-center gap-1">
+                    <span className="relative">💥</span>
+                    {post.booms.toLocaleString()}
+                </span>
             </div>
             <div className="flex items-center gap-4 text-muted-foreground text-sm">
                 <span className="flex items-center gap-1"><MessageSquare className="w-4 h-4" />{post.comments}</span>

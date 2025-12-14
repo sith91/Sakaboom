@@ -114,32 +114,20 @@ export default function TrendifyPage() {
     }
   };
 
-  const handleBoom = (postId: number, isButtonBoom: boolean = false) => {
+  const handleBoom = (postId: number) => {
     const post = posts.find(p => p.id === postId);
     if (!post) return;
 
-    if (isButtonBoom) {
+    if (!post.isBoomed) {
       setPosts(prevPosts =>
-        prevPosts.map(p =>
-          p.id === postId
-            ? { ...p, isBoomed: !p.isBoomed, booms: p.isBoomed ? p.booms - 1 : p.booms + 1 }
-            : p
-        )
-      );
-      toast({
-        title: post.isBoomed ? 'Boom removed' : 'Post Boomed!',
-        description: `You've ${post.isBoomed ? 'unboomed' : 'boomed'} the post.`,
-      });
-    } else if (!post.isBoomed) {
-       setPosts(prevPosts =>
         prevPosts.map(p =>
           p.id === postId ? { ...p, booms: p.booms + 1, isBoomed: true } : p
         )
       );
       toast({
         title: 'Post Boomed!',
-        description: "You've boomed this post by clicking on it."
-      })
+        description: "You've boomed this post."
+      });
     }
   };
 
