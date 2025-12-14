@@ -20,11 +20,12 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, Link, Tags, MessageSquare, Image, Rocket, Wand2 } from 'lucide-react';
 import NextImage from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useUser } from '@/firebase';
 
 interface SubmitPostDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onPostSubmit: (post: Omit<Post, 'id'>) => void;
+  onPostSubmit: (post: Omit<Post, 'id' | 'submitter'>) => void;
 }
 
 const debounce = (func: (...args: any[]) => void, delay: number) => {
@@ -46,6 +47,7 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
   const [isSuggestingTags, setIsSuggestingTags] = useState(false);
   const [previewData, setPreviewData] = useState<any>(null);
   const { toast } = useToast();
+  const user = useUser();
 
   const resetState = () => {
     setUrl('');
@@ -182,10 +184,15 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
       toast({ variant: 'destructive', title: 'Cannot submit', description: 'Please add at least one tag.' });
       return;
     }
+    
+    if (!user) {
+        toast({ variant: 'destructive', title: 'Authentication Required', description: 'You must be logged in to submit a post.' });
+        return;
+    }
 
     setIsSubmitting(true);
     
-    const newPost: Omit<Post, 'id'> = {
+    const newPost: Omit<Post, 'id' | 'submitter'> = {
       media: previewData.image,
       mediaHint: previewData.imageHint,
       platform: detectedPlatform as any,
@@ -193,7 +200,6 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
       caption: comment,
       booms: 1,
       comments: 0,
-      submitter: 'You',
       isVerified: false,
       tags: Array.from(tags),
       url: url,
@@ -297,7 +303,7 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
           </div>
         </div>
         <DialogFooter>
-          <Button onClick={handleSubmit} disabled={isSubmitting || isLoading || !previewData || tags.size === 0}>
+          <Button onClick={handleSubmit} disabled={isSubmitting || isLoading || !previewData || tags.size === 0 || !user}>
             {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Rocket className="mr-2 h-4 w-4" />}
             Boom it!
           </Button>

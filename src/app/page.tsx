@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { Plus, Filter, ArrowDownUp, Flame, Zap, Search } from 'lucide-react';
+import { Plus, Filter, ArrowDownUp, Flame, Zap, Search, LogIn, User } from 'lucide-react';
 import { initialPosts, categories, trendingTags, filterTagGroups } from '@/lib/data';
 import type { Post } from '@/lib/types';
 import AppHeader from '@/components/app/header';
@@ -11,6 +11,10 @@ import SubmitPostDialog from '@/components/app/submit-post-dialog';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
+import { useAuth, useUser } from '@/firebase';
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { useFirestore } from '@/firebase';
 
 export default function TrendifyPage() {
   const [posts, setPosts] = useState<Post[]>(initialPosts);
@@ -22,10 +26,44 @@ export default function TrendifyPage() {
   const [hydrated, setHydrated] = useState(false);
 
   const { toast } = useToast();
+  const auth = useAuth();
+  const user = useUser();
+  const firestore = useFirestore();
 
   useEffect(() => {
     setHydrated(true);
   }, []);
+
+  const handleGoogleSignIn = async () => {
+    if (!auth || !firestore) return;
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      const userRef = doc(firestore, "users", user.uid);
+      const userDoc = await getDoc(userRef);
+      if (!userDoc.exists()) {
+        await setDoc(userRef, {
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+          createdAt: serverTimestamp(),
+        });
+      }
+      toast({
+        title: "Signed In",
+        description: `Welcome back, ${user.displayName}!`,
+      });
+    } catch (error) {
+      console.error("Error signing in with Google: ", error);
+      toast({
+        variant: "destructive",
+        title: "Sign In Failed",
+        description: "Could not sign in with Google. Please try again.",
+      });
+    }
+  };
 
   const categoryCounts = useMemo(() => {
     const counts: Record<string, number> = { All: initialPosts.length };
@@ -33,7 +71,7 @@ export default function TrendifyPage() {
       counts[cat.name] = initialPosts.filter(p => p.tags.some(t => t.toLowerCase().includes(cat.name.toLowerCase()))).length;
     });
     return counts;
-  }, [initialPosts]);
+  }, []);
 
   const displayedPosts = useMemo(() => {
     let filteredPosts = [...posts];
@@ -76,6 +114,14 @@ export default function TrendifyPage() {
   }, [posts, activeCategory, searchQuery, activeTags, sortMethod]);
 
   const handleBoom = (postId: number) => {
+     if (!user) {
+      toast({
+        title: 'Authentication required',
+        description: 'You need to be logged in to boom a post.',
+        action: <Button onClick={handleGoogleSignIn}><LogIn className="mr-2 h-4 w-4" /> Log in</Button>,
+      });
+      return;
+    }
     setPosts(prevPosts =>
       prevPosts.map(p =>
         p.id === postId
@@ -116,9 +162,19 @@ export default function TrendifyPage() {
   };
 
   const handleAddPost = (newPostData: Omit<Post, 'id'>) => {
+    if (!user) {
+      toast({
+        title: 'Authentication required',
+        description: 'You need to be logged in to submit a post.',
+        action: <Button onClick={handleGoogleSignIn}><LogIn className="mr-2 h-4 w-4" /> Log in</Button>,
+      });
+      setSubmitDialogOpen(false);
+      return;
+    }
     const newPost: Post = {
       ...newPostData,
       id: posts.length + 1,
+      submitter: user.displayName || 'Anonymous',
     };
     setPosts(prev => [newPost, ...prev]);
   };
@@ -236,11 +292,24 @@ export default function TrendifyPage() {
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center text-center py-20 bg-card rounded-lg shadow-sm">
-                <Search className="w-16 h-16 text-muted-foreground/50 mb-4" />
-                <h3 className="text-xl font-bold">No Posts Found</h3>
-                <p className="text-muted-foreground mt-2">Try adjusting your search or filter settings.</p>
-                {activeTags.size > 0 && <Button onClick={clearAllFilters} className="mt-4">Clear Filters</Button>}
+             <div className="flex flex-col items-center justify-center text-center py-20 bg-card rounded-lg shadow-sm">
+                {user ? (
+                  <>
+                    <Search className="w-16 h-16 text-muted-foreground/50 mb-4" />
+                    <h3 className="text-xl font-bold">No Posts Found</h3>
+                    <p className="text-muted-foreground mt-2">Try adjusting your search or filter settings.</p>
+                    {activeTags.size > 0 && <Button onClick={clearAllFilters} className="mt-4">Clear Filters</Button>}
+                  </>
+                ) : (
+                  <>
+                    <User className="w-16 h-16 text-muted-foreground/50 mb-4" />
+                    <h3 className="text-xl font-bold">Welcome to Trendify!</h3>
+                    <p className="text-muted-foreground mt-2">Log in to see the hottest trends and boom your favorite posts.</p>
+                    <Button onClick={handleGoogleSignIn} className="mt-4">
+                      <LogIn className="mr-2 h-4 w-4" /> Log in with Google
+                    </Button>
+                  </>
+                )}
             </div>
           )}
         </main>

@@ -1,4 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
+import type { Timestamp } from 'firebase/firestore';
 
 export type PlatformId = 'instagram' | 'twitter' | 'youtube' | 'tiktok' | 'facebook' | 'linkedin' | 'whatsapp' | 'reddit';
 
@@ -55,4 +56,18 @@ export interface FilterTagGroup {
   label: string;
   icon: LucideIcon;
   tags: FilterTag[];
+}
+
+export interface UserProfile {
+  uid: string;
+  email?: string | null;
+  displayName?: string | null;
+  photoURL?: string | null;
+  createdAt: Timestamp;
+}
+
+export interface Boom {
+    userId: string;
+    postId: string;
+    createdAt: Timestamp;
 }
