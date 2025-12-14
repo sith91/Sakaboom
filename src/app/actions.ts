@@ -3,6 +3,7 @@
 import { predictEmergingTrends, PredictEmergingTrendsInput, PredictEmergingTrendsOutput } from '@/ai/flows/predict-emerging-trends';
 import { suggestRelevantTags, SuggestRelevantTagsInput, SuggestRelevantTagsOutput } from '@/ai/flows/suggest-relevant-tags';
 import { identifyPlatform, IdentifyPlatformInput, IdentifyPlatformOutput } from '@/ai/flows/identify-platform-flow';
+import { getUrlMetadata, GetUrlMetadataInput, GetUrlMetadataOutput } from '@/ai/flows/get-url-metadata-flow';
 
 export async function predictEmergingTrendsAction(input: PredictEmergingTrendsInput): Promise<PredictEmergingTrendsOutput> {
   try {
@@ -31,5 +32,15 @@ export async function identifyPlatformAction(input: IdentifyPlatformInput): Prom
     } catch (error) {
         console.error('Error in identifyPlatformAction:', error);
         throw new Error('Failed to identify platform.');
+    }
+}
+
+export async function getUrlMetadataAction(input: GetUrlMetadataInput): Promise<GetUrlMetadataOutput> {
+    try {
+        const result = await getUrlMetadata(input);
+        return result;
+    } catch (error) {
+        console.error('Error in getUrlMetadataAction:', error);
+        throw new Error('Failed to get URL metadata.');
     }
 }

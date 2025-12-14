@@ -15,7 +15,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { platforms } from '@/lib/data.tsx';
 import type { Post } from '@/lib/types';
-import { suggestRelevantTagsAction, identifyPlatformAction } from '@/app/actions';
+import { suggestRelevantTagsAction, identifyPlatformAction, getUrlMetadataAction } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Link, Tags, MessageSquare, Image, Rocket, Wand2 } from 'lucide-react';
 import NextImage from 'next/image';
@@ -84,34 +84,31 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
     setDetectedPlatform('Detecting...');
     
     try {
-      const { platform: platformId } = await identifyPlatformAction({ url });
+      // Parallelize platform detection and metadata fetching
+      const [platformResult, metadataResult] = await Promise.all([
+        identifyPlatformAction({ url }),
+        getUrlMetadataAction({ url })
+      ]);
+
+      const { platform: platformId } = platformResult;
 
       if (platformId && platformId !== 'unknown' && platforms[platformId]) {
         setDetectedPlatform(platformId);
         
-        // This is still a simulation, but it's more dynamic.
-        // In a real app, you'd fetch metadata from the URL on the server.
-        const mockCaptions: Record<string, string> = {
-            instagram: "Living my best life with this amazing view! #blessed #travel",
-            twitter: "Just dropped a new hot take! 🔥 You won't believe what's happening in the tech world. #Tech #Breaking",
-            youtube: "Check out my new video! We unbox the latest gadget. Link in bio! #unboxing #techreview",
-            tiktok: "New dance challenge going viral! 💃🕺 #dancechallenge #fyp",
-            facebook: "Exciting news to share with all my friends and family! So grateful for this opportunity.",
-            linkedin: "Thrilled to announce my new role as Senior Innovator at a leading tech company. #career #professionaldevelopment"
-        };
-        const mockCaption = mockCaptions[platformId] || `A very interesting post from ${platforms[platformId].name}.`;
-        setComment(mockCaption);
+        const { title, description, image } = metadataResult;
         
-        const img = PlaceHolderImages.find(i => i.id === '11');
+        const finalDescription = description || title || `A very interesting post from ${platforms[platformId].name}.`;
+        setComment(finalDescription);
+
         const defaultImg = PlaceHolderImages.find(i => i.id === '12');
 
         setPreviewData({
           platform: platforms[platformId],
           url: url,
-          image: platformId === 'instagram' ? img?.imageUrl : defaultImg?.imageUrl,
-          imageHint: platformId === 'instagram' ? img?.imageHint : defaultImg?.imageHint,
-          title: `Post from ${platforms[platformId].name}`,
-          description: mockCaption
+          image: image || defaultImg?.imageUrl,
+          imageHint: 'social media preview',
+          title: title || `Post from ${platforms[platformId].name}`,
+          description: finalDescription
         });
       } else {
         setDetectedPlatform('unknown');
@@ -123,11 +120,12 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
         setPreviewData(null);
       }
     } catch (error) {
-        setDetectedPlatform('unknown');
+        console.error(error);
+        setDetectedPlatform('error');
         toast({
             variant: "destructive",
             title: "Error",
-            description: "Could not analyze the URL. Please try again.",
+            description: "Could not analyze the URL. The link may be private, incorrect, or from an unsupported site.",
         });
         setPreviewData(null);
     } finally {
@@ -256,7 +254,7 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
                 {platforms[detectedPlatform].icon}
                 <span>{platforms[detectedPlatform].name}</span>
               </div>
-            ) : detectedPlatform === 'unknown' ? (
+            ) : detectedPlatform === 'unknown' || detectedPlatform === 'error' ? (
                 <span className='font-semibold text-destructive'>Unsupported</span>
             ) : (
               <span>None</span>
@@ -304,11 +302,17 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
               <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
             ) : previewData ? (
                 <div className="flex gap-4 w-full">
-                    <div className="w-24 h-24 relative shrink-0">
-                        <NextImage src={previewData.image} alt="Preview" fill className="rounded-md object-cover" data-ai-hint={previewData.imageHint}/>
+                    <div className="w-24 h-24 relative shrink-0 bg-background rounded-md">
+                        {previewData.image ? (
+                            <NextImage src={previewData.image} alt="Preview" fill className="rounded-md object-cover" data-ai-hint={previewData.imageHint}/>
+                        ) : (
+                             <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                                <Image className="w-8 h-8" />
+                            </div>
+                        )}
                     </div>
-                    <div className="flex flex-col gap-1">
-                        <h4 className="font-bold">{previewData.title}</h4>
+                    <div className="flex flex-col gap-1 overflow-hidden">
+                        <h4 className="font-bold truncate">{previewData.title}</h4>
                         <p className="text-sm text-muted-foreground line-clamp-3">{previewData.description}</p>
                     </div>
                 </div>
