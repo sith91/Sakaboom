@@ -180,18 +180,6 @@ export const initialPosts: Post[] = [
 ];
 
 
-export const categories: Category[] = [
-  { name: 'All' },
-  { name: 'Tech', icon: Code2 },
-  { name: 'News', icon: Newspaper },
-  { name: 'Gaming', icon: Gamepad2 },
-  { name: 'Entertainment', icon: Film },
-  { name: 'Sports', icon: Dumbbell },
-  { name: 'Science', icon: FlaskConical },
-  { name: 'Travel', icon: Plane },
-  { name: 'Education', icon: GraduationCap },
-];
-
 export const trendingTags: TrendingTag[] = [
   { name: 'Celebrity News', icon: '🌟' },
   { name: 'Influencer Culture', icon: '📱' },

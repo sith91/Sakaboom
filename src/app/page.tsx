@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { Plus, Filter, ArrowDownUp, Flame, Zap, Search, LogIn, User, X } from 'lucide-react';
-import { initialPosts, categories, trendingTags } from '@/lib/data';
+import { initialPosts, trendingTags } from '@/lib/data';
 import type { Post } from '@/lib/types';
 import AppHeader from '@/components/app/header';
 import PostCard from '@/components/app/post-card';
@@ -16,7 +16,6 @@ import { Facebook as FacebookIcon } from '@/components/icons';
 
 export default function TrendifyPage() {
   const [posts, setPosts] = useState<Post[]>(initialPosts);
-  const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortMethod, setSortMethod] = useState('trending');
   const [isSubmitDialogOpen, setSubmitDialogOpen] = useState(false);
@@ -37,15 +36,6 @@ export default function TrendifyPage() {
   const handleFacebookSignIn = () => {
     toast({ title: 'Sign in functionality to be implemented' });
   };
-
-
-  const categoryCounts = useMemo(() => {
-    const counts: Record<string, number> = { All: initialPosts.length };
-    categories.slice(1).forEach(cat => {
-      counts[cat.name] = initialPosts.filter(p => p.tags.some(t => t.toLowerCase().includes(cat.name.toLowerCase()))).length;
-    });
-    return counts;
-  }, []);
   
   const allTags = useMemo(() => {
     const tagSet = new Set<string>();
@@ -57,12 +47,6 @@ export default function TrendifyPage() {
 
   const displayedPosts = useMemo(() => {
     let filteredPosts = [...posts];
-
-    if (activeCategory !== 'All') {
-      filteredPosts = filteredPosts.filter(post =>
-        post.tags.some(tag => tag.toLowerCase().includes(activeCategory.toLowerCase()))
-      );
-    }
     
     // Advanced Tag Search (All tags must match)
     if (advancedTags.length > 0) {
@@ -96,7 +80,7 @@ export default function TrendifyPage() {
           return scoreB - scoreA;
       }
     });
-  }, [posts, activeCategory, searchQuery, sortMethod, advancedTags]);
+  }, [posts, searchQuery, sortMethod, advancedTags]);
   
   const handleApplyAdvancedFilter = (tags: string[]) => {
     setAdvancedTags(tags);
@@ -167,26 +151,6 @@ export default function TrendifyPage() {
   return (
     <div className="bg-background min-h-screen text-foreground">
       <AppHeader onSearchChange={setSearchQuery} posts={posts} />
-
-      <div className="bg-card border-b">
-        <div className="container mx-auto px-4">
-          <div className="flex space-x-2 overflow-x-auto py-3 scrollbar-hide">
-            {categories.map(cat => (
-              <Button
-                key={cat.name}
-                variant={activeCategory === cat.name ? 'default' : 'ghost'}
-                size="sm"
-                className="rounded-full shrink-0"
-                onClick={() => setActiveCategory(cat.name)}
-              >
-                {cat.icon && <cat.icon className="mr-2 h-4 w-4" />}
-                {cat.name}
-                <Badge variant="secondary" className="ml-2">{categoryCounts[cat.name] || 0}</Badge>
-              </Button>
-            ))}
-          </div>
-        </div>
-      </div>
       
       <div className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white py-2">
         <div className="container mx-auto px-4 flex items-center gap-2 overflow-x-auto scrollbar-hide">
