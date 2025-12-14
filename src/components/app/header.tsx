@@ -3,9 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, LogIn, UserPlus, LogOut } from 'lucide-react';
 import Link from 'next/link';
-import { LogoIcon } from '@/components/icons';
-import { useAuth, useUser } from '@/firebase';
-import { signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
+import { LogoIcon, Facebook as FacebookIcon } from '@/components/icons';
 import { useToast } from '@/hooks/use-toast';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import {
@@ -16,8 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { useFirestore } from '@/firebase';
+import { useState } from 'react';
 
 
 interface AppHeaderProps {
@@ -25,58 +22,22 @@ interface AppHeaderProps {
 }
 
 export default function AppHeader({ onSearchChange }: AppHeaderProps) {
-  const auth = useAuth();
-  const user = useUser();
-  const firestore = useFirestore();
   const { toast } = useToast();
+  const [user, setUser] = useState<any>(null); // Placeholder for user state
 
-  const handleGoogleSignIn = async () => {
-    if (!auth || !firestore) return;
-    const provider = new GoogleAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      const userRef = doc(firestore, "users", user.uid);
-      const userDoc = await getDoc(userRef);
-      if (!userDoc.exists()) {
-        await setDoc(userRef, {
-          uid: user.uid,
-          email: user.email,
-          displayName: user.displayName,
-          photoURL: user.photoURL,
-          createdAt: serverTimestamp(),
-        });
-      }
-      toast({
-        title: "Signed In",
-        description: `Welcome back, ${user.displayName}!`,
-      });
-    } catch (error) {
-      console.error("Error signing in with Google: ", error);
-      toast({
-        variant: "destructive",
-        title: "Sign In Failed",
-        description: "Could not sign in with Google. Please try again.",
-      });
-    }
+  const handleGoogleSignIn = () => {
+    toast({ title: 'Sign in functionality to be implemented' });
+  };
+
+  const handleFacebookSignIn = () => {
+    toast({ title: 'Sign in functionality to be implemented' });
   };
 
   const handleSignOut = async () => {
-    if (!auth) return;
-    try {
-      await signOut(auth);
-      toast({
-        title: "Signed Out",
-        description: "You have been successfully signed out.",
-      });
-    } catch (error) {
-      console.error("Error signing out: ", error);
-      toast({
-        variant: "destructive",
-        title: "Sign Out Failed",
-        description: "Could not sign out. Please try again.",
-      });
-    }
+    toast({
+      title: "Signed Out",
+      description: "You have been successfully signed out.",
+    });
   };
 
 
@@ -125,9 +86,21 @@ export default function AppHeader({ onSearchChange }: AppHeaderProps) {
             </DropdownMenu>
           ) : (
             <div className="hidden items-center gap-2 md:flex">
-              <Button variant="outline" onClick={handleGoogleSignIn}>
-                <LogIn className="mr-2 h-4 w-4" /> Log in
-              </Button>
+               <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline"><LogIn className="mr-2 h-4 w-4" /> Log in</Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onClick={handleGoogleSignIn}>
+                    <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 381.5 512 244 512 111.8 512 0 400.2 0 261.8 0 123.8 111.8 12.5 244 12.5c72.6 0 134.3 29.3 179.9 74.5L356.1 154.3c-34.4-33.4-85.3-54.3-138.2-54.3-109.1 0-198.3 88.3-198.3 197.8s89.2 197.8 198.3 197.8c114.9 0 181.7-83.3 185.5-161.4H244V261.8h244z"></path></svg>
+                    <span>Google</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleFacebookSignIn}>
+                    <FacebookIcon className="mr-2 h-4 w-4" />
+                    <span>Facebook</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <Button onClick={handleGoogleSignIn}>
                 <UserPlus className="mr-2 h-4 w-4" /> Sign up
               </Button>

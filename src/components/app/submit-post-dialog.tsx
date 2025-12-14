@@ -20,12 +20,11 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, Link, Tags, MessageSquare, Image, Rocket, Wand2 } from 'lucide-react';
 import NextImage from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { useUser } from '@/firebase';
 
 interface SubmitPostDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onPostSubmit: (post: Omit<Post, 'id' | 'submitter'>) => void;
+  onPostSubmit: (post: Omit<Post, 'id' >) => void;
 }
 
 const debounce = (func: (...args: any[]) => void, delay: number) => {
@@ -47,7 +46,7 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
   const [isSuggestingTags, setIsSuggestingTags] = useState(false);
   const [previewData, setPreviewData] = useState<any>(null);
   const { toast } = useToast();
-  const user = useUser();
+  const [user, setUser] = useState<any>(true); // Placeholder for user state, assume logged in
 
   const resetState = () => {
     setUrl('');
@@ -192,7 +191,7 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
 
     setIsSubmitting(true);
     
-    const newPost: Omit<Post, 'id' | 'submitter'> = {
+    const newPost: Omit<Post, 'id'> = {
       media: previewData.image,
       mediaHint: previewData.imageHint,
       platform: detectedPlatform as any,
@@ -200,6 +199,7 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
       caption: comment,
       booms: 1,
       comments: 0,
+      submitter: 'Anonymous',
       isVerified: false,
       tags: Array.from(tags),
       url: url,

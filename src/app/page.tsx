@@ -11,10 +11,7 @@ import SubmitPostDialog from '@/components/app/submit-post-dialog';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
-import { useAuth, useUser } from '@/firebase';
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
-import { useFirestore } from '@/firebase';
+import { Facebook as FacebookIcon } from '@/components/icons';
 
 export default function TrendifyPage() {
   const [posts, setPosts] = useState<Post[]>(initialPosts);
@@ -24,46 +21,21 @@ export default function TrendifyPage() {
   const [sortMethod, setSortMethod] = useState('trending');
   const [isSubmitDialogOpen, setSubmitDialogOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const [user, setUser] = useState<any>(null); // Placeholder for user state
 
   const { toast } = useToast();
-  const auth = useAuth();
-  const user = useUser();
-  const firestore = useFirestore();
 
   useEffect(() => {
     setHydrated(true);
   }, []);
 
-  const handleGoogleSignIn = async () => {
-    if (!auth || !firestore) return;
-    const provider = new GoogleAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      const userRef = doc(firestore, "users", user.uid);
-      const userDoc = await getDoc(userRef);
-      if (!userDoc.exists()) {
-        await setDoc(userRef, {
-          uid: user.uid,
-          email: user.email,
-          displayName: user.displayName,
-          photoURL: user.photoURL,
-          createdAt: serverTimestamp(),
-        });
-      }
-      toast({
-        title: "Signed In",
-        description: `Welcome back, ${user.displayName}!`,
-      });
-    } catch (error) {
-      console.error("Error signing in with Google: ", error);
-      toast({
-        variant: "destructive",
-        title: "Sign In Failed",
-        description: "Could not sign in with Google. Please try again.",
-      });
-    }
+  const handleGoogleSignIn = () => {
+    toast({ title: 'Sign in functionality to be implemented' });
   };
+  const handleFacebookSignIn = () => {
+    toast({ title: 'Sign in functionality to be implemented' });
+  };
+
 
   const categoryCounts = useMemo(() => {
     const counts: Record<string, number> = { All: initialPosts.length };
@@ -114,14 +86,6 @@ export default function TrendifyPage() {
   }, [posts, activeCategory, searchQuery, activeTags, sortMethod]);
 
   const handleBoom = (postId: number) => {
-     if (!user) {
-      toast({
-        title: 'Authentication required',
-        description: 'You need to be logged in to boom a post.',
-        action: <Button onClick={handleGoogleSignIn}><LogIn className="mr-2 h-4 w-4" /> Log in</Button>,
-      });
-      return;
-    }
     setPosts(prevPosts =>
       prevPosts.map(p =>
         p.id === postId
@@ -162,19 +126,9 @@ export default function TrendifyPage() {
   };
 
   const handleAddPost = (newPostData: Omit<Post, 'id'>) => {
-    if (!user) {
-      toast({
-        title: 'Authentication required',
-        description: 'You need to be logged in to submit a post.',
-        action: <Button onClick={handleGoogleSignIn}><LogIn className="mr-2 h-4 w-4" /> Log in</Button>,
-      });
-      setSubmitDialogOpen(false);
-      return;
-    }
     const newPost: Post = {
       ...newPostData,
       id: posts.length + 1,
-      submitter: user.displayName || 'Anonymous',
     };
     setPosts(prev => [newPost, ...prev]);
   };
@@ -301,14 +255,21 @@ export default function TrendifyPage() {
                     {activeTags.size > 0 && <Button onClick={clearAllFilters} className="mt-4">Clear Filters</Button>}
                   </>
                 ) : (
-                  <>
+                  <div className="flex flex-col items-center justify-center text-center">
                     <User className="w-16 h-16 text-muted-foreground/50 mb-4" />
                     <h3 className="text-xl font-bold">Welcome to Trendify!</h3>
                     <p className="text-muted-foreground mt-2">Log in to see the hottest trends and boom your favorite posts.</p>
-                    <Button onClick={handleGoogleSignIn} className="mt-4">
-                      <LogIn className="mr-2 h-4 w-4" /> Log in with Google
-                    </Button>
-                  </>
+                    <div className="flex gap-4 mt-4">
+                        <Button onClick={handleGoogleSignIn}>
+                          <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 381.5 512 244 512 111.8 512 0 400.2 0 261.8 0 123.8 111.8 12.5 244 12.5c72.6 0 134.3 29.3 179.9 74.5L356.1 154.3c-34.4-33.4-85.3-54.3-138.2-54.3-109.1 0-198.3 88.3-198.3 197.8s89.2 197.8 198.3 197.8c114.9 0 181.7-83.3 185.5-161.4H244V261.8h244z"></path></svg>
+                          Log in with Google
+                        </Button>
+                        <Button onClick={handleFacebookSignIn} variant="outline">
+                            <FacebookIcon className="mr-2 h-4 w-4" />
+                            Log in with Facebook
+                        </Button>
+                    </div>
+                </div>
                 )}
             </div>
           )}
