@@ -29,6 +29,7 @@ import React from 'react';
 interface PostCardProps {
   post: Post;
   onBoom: (id: number) => void;
+  onTagClick: (tag: string) => void;
 }
 
 function getTimeAgo(timestamp: Date): string {
@@ -48,7 +49,7 @@ function getTimeAgo(timestamp: Date): string {
   return 'Just now';
 }
 
-export default function PostCard({ post, onBoom }: PostCardProps) {
+export default function PostCard({ post, onBoom, onTagClick }: PostCardProps) {
   const platformInfo = platforms[post.platform];
 
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -64,6 +65,11 @@ export default function PostCard({ post, onBoom }: PostCardProps) {
     }
     onBoom(post.id); // This is a "view" boom
     window.open(post.url, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleTagBadgeClick = (e: React.MouseEvent, tag: string) => {
+    e.stopPropagation();
+    onTagClick(tag);
   };
 
   return (
@@ -118,8 +124,9 @@ export default function PostCard({ post, onBoom }: PostCardProps) {
             <Badge
               key={tag}
               variant={"secondary"}
-              className="cursor-pointer"
-              data-tag-badge // Prevent card click
+              className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
+              data-tag-badge
+              onClick={(e) => handleTagBadgeClick(e, tag)}
             >
               {tag}
             </Badge>

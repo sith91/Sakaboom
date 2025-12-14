@@ -114,6 +114,15 @@ export default function TrendifyPage() {
     }
   };
 
+  const handleTagClick = (tag: string) => {
+    setAdvancedTags([tag]);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    toast({
+        title: "Filter Applied",
+        description: `Showing posts with tag: ${tag}`
+    });
+  };
+
   const handleBoom = (postId: number) => {
     const post = posts.find(p => p.id === postId);
     if (!post) return;
@@ -231,7 +240,8 @@ export default function TrendifyPage() {
                 <PostCard 
                   key={post.id} 
                   post={post} 
-                  onBoom={handleBoom} 
+                  onBoom={handleBoom}
+                  onTagClick={handleTagClick}
                 />
               ))}
             </div>
