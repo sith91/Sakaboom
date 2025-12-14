@@ -1,0 +1,308 @@
+'use client';
+
+import { useState, useCallback } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import { platforms } from '@/lib/data';
+import type { Post } from '@/lib/types';
+import { suggestRelevantTagsAction } from '@/app/actions';
+import { useToast } from '@/hooks/use-toast';
+import { Loader2, Link, Tags, MessageSquare, Image, Rocket, Wand2 } from 'lucide-react';
+import NextImage from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
+
+interface SubmitPostDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onPostSubmit: (post: Omit<Post, 'id'>) => void;
+}
+
+const debounce = (func: (...args: any[]) => void, delay: number) => {
+  let timeout: NodeJS.Timeout;
+  return (...args: any[]) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), delay);
+  };
+};
+
+export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: SubmitPostDialogProps) {
+  const [url, setUrl] = useState('');
+  const [comment, setComment] = useState('');
+  const [detectedPlatform, setDetectedPlatform] = useState<string | null>(null);
+  const [tags, setTags] = useState<Set<string>>(new Set());
+  const [tagInput, setTagInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuggestingTags, setIsSuggestingTags] = useState(false);
+  const [previewData, setPreviewData] = useState<any>(null);
+  const { toast } = useToast();
+
+  const resetState = () => {
+    setUrl('');
+    setComment('');
+    setDetectedPlatform(null);
+    setTags(new Set());
+    setTagInput('');
+    setIsLoading(false);
+    setIsSubmitting(false);
+    setPreviewData(null);
+  };
+
+  const handleOpenChange = (isOpen: boolean) => {
+    if (!isOpen) {
+      resetState();
+    }
+    onOpenChange(isOpen);
+  };
+
+  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newUrl = e.target.value;
+    setUrl(newUrl);
+    detectPlatformDebounced(newUrl);
+  };
+
+  const detectPlatform = async (url: string) => {
+    if (!url.trim()) {
+      setDetectedPlatform(null);
+      setPreviewData(null);
+      return;
+    }
+    
+    setIsLoading(true);
+    setPreviewData(null);
+    setDetectedPlatform('Detecting...');
+    
+    // Simulate API call for platform detection and metadata fetching
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    let platformId: string | null = null;
+    if (url.includes('instagram.com')) platformId = 'instagram';
+    else if (url.includes('twitter.com') || url.includes('x.com')) platformId = 'twitter';
+    else if (url.includes('youtube.com')) platformId = 'youtube';
+    else if (url.includes('tiktok.com')) platformId = 'tiktok';
+    else if (url.includes('facebook.com')) platformId = 'facebook';
+    else if (url.includes('linkedin.com')) platformId = 'linkedin';
+
+    if (platformId && platforms[platformId]) {
+      setDetectedPlatform(platformId);
+      
+      const mockCaption = "This is a fetched caption for the post. #awesome #content";
+      setComment(mockCaption);
+
+      const img = PlaceHolderImages.find(i => i.id === '11');
+      const defaultImg = PlaceHolderImages.find(i => i.id === '12');
+
+      setPreviewData({
+        platform: platforms[platformId],
+        url: url,
+        image: platformId === 'instagram' ? img?.imageUrl : defaultImg?.imageUrl,
+        imageHint: platformId === 'instagram' ? img?.imageHint : defaultImg?.imageHint,
+        title: `Post from ${platforms[platformId].name}`,
+        description: mockCaption
+      });
+    } else {
+      setDetectedPlatform('unknown');
+      setPreviewData(null);
+    }
+    
+    setIsLoading(false);
+  };
+
+  const detectPlatformDebounced = useCallback(debounce(detectPlatform, 500), []);
+
+  const handleTagInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && tagInput.trim()) {
+      e.preventDefault();
+      setTags(new Set(tags).add(tagInput.trim()));
+      setTagInput('');
+    } else if (e.key === 'Backspace' && !tagInput && tags.size > 0) {
+      const lastTag = Array.from(tags).pop();
+      if (lastTag) {
+        const newTags = new Set(tags);
+        newTags.delete(lastTag);
+        setTags(newTags);
+      }
+    }
+  };
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    setTags(prev => {
+      const newTags = new Set(prev);
+      newTags.delete(tagToRemove);
+      return newTags;
+    });
+  };
+
+this.handleGenerateTags = async () => {
+    if (!detectedPlatform || !comment) {
+      toast({
+        variant: "destructive",
+        title: "Cannot suggest tags",
+        description: "A platform and some text are needed to suggest tags.",
+      });
+      return;
+    }
+    setIsSuggestingTags(true);
+    try {
+      const result = await suggestRelevantTagsAction({
+        platform: detectedPlatform,
+        text: comment,
+      });
+      if (result.tags) {
+        setTags(prev => new Set([...Array.from(prev), ...result.tags]));
+        toast({ title: "AI tags added!" });
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "AI Error",
+        description: "Could not suggest tags at this time.",
+      });
+    } finally {
+      setIsSuggestingTags(false);
+    }
+  };
+
+  const handleSubmit = () => {
+    if (!detectedPlatform || detectedPlatform === 'unknown' || !previewData) {
+      toast({ variant: 'destructive', title: 'Cannot submit', description: 'A valid platform must be detected.' });
+      return;
+    }
+    if (tags.size === 0) {
+      toast({ variant: 'destructive', title: 'Cannot submit', description: 'Please add at least one tag.' });
+      return;
+    }
+
+    setIsSubmitting(true);
+    
+    const newPost: Omit<Post, 'id'> = {
+      media: previewData.image,
+      mediaHint: previewData.imageHint,
+      platform: detectedPlatform as any,
+      text: comment,
+      caption: comment,
+      booms: 1,
+      comments: 0,
+      submitter: 'You',
+      isVerified: false,
+      tags: Array.from(tags),
+      url: url,
+      isNew: true,
+      isBoomed: true,
+      hasVideo: false,
+      shares: 0,
+      timestamp: new Date(),
+    };
+
+    setTimeout(() => {
+      onPostSubmit(newPost);
+      toast({ title: 'Post submitted!', description: 'Your post is now live on Trendify.' });
+      setIsSubmitting(false);
+      handleOpenChange(false);
+    }, 1000);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent className="sm:max-w-[600px]">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2"><Rocket className="w-5 h-5" /> Share What's Booming</DialogTitle>
+          <DialogDescription>Paste a link from a social platform to share it on Trendify.</DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid gap-2">
+            <label htmlFor="post-url" className="font-medium flex items-center gap-2"><Link className="w-4 h-4"/> Social Media Link</label>
+            <Input id="post-url" value={url} onChange={handleUrlChange} placeholder="e.g., https://instagram.com/p/..." />
+          </div>
+
+          <div className="p-3 bg-secondary/50 rounded-lg flex items-center gap-3 text-sm">
+            <strong>Detected Platform:</strong>
+            {isLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : detectedPlatform && platforms[detectedPlatform] ? (
+              <div className="flex items-center gap-2 font-semibold" style={{ color: platforms[detectedPlatform].color }}>
+                {platforms[detectedPlatform].icon}
+                <span>{platforms[detectedPlatform].name}</span>
+              </div>
+            ) : (
+              <span>None</span>
+            )}
+          </div>
+          
+          {previewData && (
+             <div className="grid gap-2">
+              <label className="font-medium flex items-center gap-2"><MessageSquare className="w-4 h-4"/> Your Comment</label>
+              <Textarea value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Add your thoughts about this content..." />
+            </div>
+          )}
+
+          {previewData && (
+            <div className="grid gap-2">
+              <div className="flex justify-between items-center">
+                <label className="font-medium flex items-center gap-2"><Tags className="w-4 h-4"/> Tags</label>
+                <Button size="sm" variant="ghost" onClick={this.handleGenerateTags} disabled={isSuggestingTags}>
+                  {isSuggestingTags ? <Loader2 className="h-4 w-4 animate-spin mr-2"/> : <Wand2 className="h-4 w-4 mr-2"/>}
+                  Suggest with AI
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-2 p-2 border rounded-lg min-h-[40px]">
+                {Array.from(tags).map(tag => (
+                  <Badge key={tag} variant="default">
+                    {tag}
+                    <button onClick={() => handleRemoveTag(tag)} className="ml-1 rounded-full hover:bg-primary-foreground/20 p-0.5">
+                      <svg xmlns="http://wwwpackage.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/></svg>
+                    </button>
+                  </Badge>
+                ))}
+                <Input
+                  className="flex-1 border-none shadow-none focus-visible:ring-0 h-auto p-0 m-1 bg-transparent"
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={handleTagInputKeyDown}
+                  placeholder="Add tags..."
+                />
+              </div>
+            </div>
+          )}
+
+          <div className="mt-2 p-4 bg-secondary/50 rounded-lg min-h-[100px] flex items-center justify-center">
+            {isLoading ? (
+              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            ) : previewData ? (
+                <div className="flex gap-4 w-full">
+                    <div className="w-24 h-24 relative shrink-0">
+                        <NextImage src={previewData.image} alt="Preview" fill className="rounded-md object-cover" data-ai-hint={previewData.imageHint}/>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <h4 className="font-bold">{previewData.title}</h4>
+                        <p className="text-sm text-muted-foreground line-clamp-3">{previewData.description}</p>
+                    </div>
+                </div>
+            ) : (
+              <div className="text-center text-muted-foreground">
+                <Image className="w-8 h-8 mx-auto mb-2" />
+                <p>Preview will appear here</p>
+              </div>
+            )}
+          </div>
+        </div>
+        <DialogFooter>
+          <Button onClick={handleSubmit} disabled={isSubmitting || isLoading || !previewData || tags.size === 0}>
+            {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Rocket className="mr-2 h-4 w-4" />}
+            Boom it!
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}

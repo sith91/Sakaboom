@@ -1,0 +1,58 @@
+import type { LucideIcon } from 'lucide-react';
+
+export type PlatformId = 'instagram' | 'twitter' | 'youtube' | 'tiktok' | 'facebook' | 'linkedin' | 'whatsapp' | 'reddit';
+
+export interface Platform {
+  id: PlatformId;
+  name: string;
+  icon: React.ReactNode;
+  color: string;
+  gradient?: string;
+}
+
+export interface Post {
+  id: number;
+  media: string;
+  mediaHint: string;
+  platform: PlatformId;
+  text: string;
+  caption: string;
+  booms: number;
+  comments: number;
+  submitter: string;
+  isVerified: boolean;
+  tags: string[];
+  url: string;
+  isNew: boolean;
+  isBoomed: boolean;
+  hasVideo: boolean;
+  shares: number;
+  timestamp: Date;
+  isCelebrity?: boolean;
+  followerCount?: string;
+  following?: string;
+  postCount?: string;
+  location?: string;
+  likes?: string;
+}
+
+export interface Category {
+  name: string;
+  icon?: LucideIcon;
+}
+
+export interface TrendingTag {
+  name: string;
+  icon: string;
+}
+
+export interface FilterTag {
+  name: string;
+  count: number;
+}
+
+export interface FilterTagGroup {
+  label: string;
+  icon: LucideIcon;
+  tags: FilterTag[];
+}

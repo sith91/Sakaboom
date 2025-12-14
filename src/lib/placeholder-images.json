@@ -1,3 +1,76 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "1",
+      "description": "Mia Khalifa photoshoot in Dubai",
+      "imageUrl": "https://images.unsplash.com/photo-1609505848912-b7c3b8b4beda?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc2NTY2NjY2Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman portrait"
+    },
+    {
+      "id": "2",
+      "description": "Hotel in Colombo",
+      "imageUrl": "https://images.unsplash.com/photo-1611892440504-42a792e24d32?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxob3RlbCUyMHJvb218ZW58MHx8fHwxNzY1NjY1ODcwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "hotel room"
+    },
+    {
+      "id": "3",
+      "description": "Seafood restaurant in Colombo",
+      "imageUrl": "https://images.unsplash.com/photo-1605800226723-4aeea545fc3d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c2VhZm9vZCUyMGRpc2h8ZW58MHx8fHwxNzY1NjMwMDc4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "seafood dish"
+    },
+    {
+      "id": "4",
+      "description": "Travel guide to Colombo",
+      "imageUrl": "https://images.unsplash.com/photo-1619467416348-6a782839e95f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx0cmF2ZWwlMjBmbGF0bGF5fGVufDB8fHx8MTc2NTcxMTE1N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "travel flatlay"
+    },
+    {
+      "id": "5",
+      "description": "Luxury resort in Maldives",
+      "imageUrl": "https://images.unsplash.com/photo-1637576308588-6647bf80944d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtYWxkaXZlcyUyMGJ1bmdhbG93fGVufDB8fHx8MTc2NTcyMDcyOXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "maldives bungalow"
+    },
+    {
+      "id": "6",
+      "description": "Street food tour in Bangkok",
+      "imageUrl": "https://images.unsplash.com/photo-1619683815335-2b5b130a1baf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzdHJlZXQlMjBmb29kfGVufDB8fHx8MTc2NTY4NTY5Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "street food"
+    },
+    {
+      "id": "7",
+      "description": "Cozy cafe in Tokyo",
+      "imageUrl": "https://images.unsplash.com/photo-1726873800099-53f5496281e0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y2FmZSUyMGludGVyaW9yfGVufDB8fHx8MTc2NTY4MjYwNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cafe interior"
+    },
+    {
+      "id": "8",
+      "description": "Hiking trails in New Zealand",
+      "imageUrl": "https://images.unsplash.com/photo-1591640040362-f55d95a6b2bc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxuZXclMjB6ZWFsYW5kJTIwbGFuZHNjYXBlfGVufDB8fHx8MTc2NTcyMDcyOXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "new zealand landscape"
+    },
+    {
+      "id": "9",
+      "description": "Shopping in Dubai Mall",
+      "imageUrl": "https://images.unsplash.com/photo-1522684462852-01b24e76b77d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzaG9wcGluZyUyMG1hbGx8ZW58MHx8fHwxNzY1Njk3ODkxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "shopping mall"
+    },
+    {
+      "id": "10",
+      "description": "Beach resort in Bali",
+      "imageUrl": "https://images.unsplash.com/photo-1729606559410-f367a0a31e6b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8YmFsaSUyMHJlc29ydHxlbnwwfHx8fDE3NjU3MjA3MzB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "bali resort"
+    },
+    {
+      "id": "11",
+      "description": "Instagram preview image",
+      "imageUrl": "https://images.unsplash.com/photo-1611042553484-d61f84d22784?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxmYXNoaW9uJTIwbW9kZWx8ZW58MHx8fHwxNzY1NjA5MTA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "fashion model"
+    },
+    {
+      "id": "12",
+      "description": "Default post preview image",
+      "imageUrl": "https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxhYnN0cmFjdHxlbnwwfHx8fDE3NjU2NDI2NTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract"
+    }
+  ]
 }
