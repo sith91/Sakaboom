@@ -49,6 +49,19 @@ function getTimeAgo(timestamp: Date): string {
   return 'Just now';
 }
 
+const tagColorClasses = [
+  'bg-blue-100 text-blue-800 hover:bg-blue-200',
+  'bg-green-100 text-green-800 hover:bg-green-200',
+  'bg-yellow-100 text-yellow-800 hover:bg-yellow-200',
+  'bg-purple-100 text-purple-800 hover:bg-purple-200',
+  'bg-pink-100 text-pink-800 hover:bg-pink-200',
+  'bg-indigo-100 text-indigo-800 hover:bg-indigo-200',
+];
+
+const getTagColor = (index: number) => {
+    return tagColorClasses[index % tagColorClasses.length];
+}
+
 export default function PostCard({ post, onBoom, onTagClick }: PostCardProps) {
   const platformInfo = platforms[post.platform];
 
@@ -119,11 +132,13 @@ export default function PostCard({ post, onBoom, onTagClick }: PostCardProps) {
         )}
 
         <div className="flex flex-wrap gap-1 mb-4">
-          {post.tags.map((tag) => (
+          {post.tags.map((tag, index) => (
             <Badge
               key={tag}
-              variant={"secondary"}
-              className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
+              className={cn(
+                "cursor-pointer border-transparent",
+                getTagColor(index)
+              )}
               data-tag-badge
               onClick={(e) => handleTagBadgeClick(e, tag)}
             >
