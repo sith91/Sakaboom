@@ -58,8 +58,7 @@ export default function PostCard({ post, onBoom, onTagClick }: PostCardProps) {
     if (
       target.closest('button') || 
       target.closest('a') || 
-      target.closest('[data-tag-badge]') ||
-      target.closest('[data-boom-button-area]')
+      target.closest('[data-tag-badge]')
     ) {
       return;
     }
