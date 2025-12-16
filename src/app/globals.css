@@ -4,48 +4,48 @@
 
 @layer base {
   :root {
-    --background: 0 0% 0%; /* TikTok Black */
-    --foreground: 0 0% 98%;
-    --card: 0 0% 8%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 8%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 345 100% 47%; /* TikTok Pink */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 14%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 175 100% 50%; /* TikTok Cyan */
-    --accent-foreground: 0 0% 0%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 345 100% 47%;
+    --background: 224 71% 4%; /* Deep Blue */
+    --foreground: 210 40% 98%;
+    --card: 225 6% 13%; /* Dark Grey */
+    --card-foreground: 210 40% 98%;
+    --popover: 224 71% 4%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 180 100% 50%; /* Vibrant Cyan */
+    --primary-foreground: 224 71% 4%;
+    --secondary: 215 28% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 215 28% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 215 28% 17%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 215 28% 17%;
+    --input: 215 28% 17%;
+    --ring: 180 100% 50%;
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 0 0% 0%; /* TikTok Black */
-    --foreground: 0 0% 98%;
-    --card: 0 0% 8%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 8%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 345 100% 47%; /* TikTok Pink */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 14%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 175 100% 50%; /* TikTok Cyan */
-    --accent-foreground: 0 0% 0%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 345 100% 47%;
+    --background: 224 71% 4%; /* Deep Blue */
+    --foreground: 210 40% 98%;
+    --card: 225 6% 13%; /* Dark Grey */
+    --card-foreground: 210 40% 98%;
+    --popover: 224 71% 4%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 180 100% 50%; /* Vibrant Cyan */
+    --primary-foreground: 224 71% 4%;
+    --secondary: 215 28% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 215 28% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 215 28% 17%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 215 28% 17%;
+    --input: 215 28% 17%;
+    --ring: 180 100% 50%;
   }
 }
 
