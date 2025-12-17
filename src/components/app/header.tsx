@@ -1,7 +1,7 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, LogIn, UserPlus, LogOut, LayoutDashboard } from 'lucide-react';
+import { Search, LogIn, UserPlus, LogOut, LayoutDashboard, X } from 'lucide-react';
 import Link from 'next/link';
 import { LogoIcon, Facebook as FacebookIcon } from '@/components/icons';
 import { useToast } from '@/hooks/use-toast';
@@ -18,6 +18,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { useState } from 'react';
 import AppSidebar from './sidebar';
 import { Post } from '@/lib/types';
+import { cn } from '@/lib/utils';
 
 
 interface AppHeaderProps {
@@ -39,6 +40,7 @@ export default function AppHeader({
 }: AppHeaderProps) {
   const { toast } = useToast();
   const [user, setUser] = useState<any>(null); // Placeholder for user state
+  const [isMobileSearchOpen, setMobileSearchOpen] = useState(false);
 
   const handleGoogleSignIn = () => {
     toast({ title: 'Sign in functionality to be implemented' });
@@ -58,44 +60,70 @@ export default function AppHeader({
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 text-foreground shadow-sm">
-      <div className="container mx-auto flex h-16 items-center gap-4 px-4 md:px-6">
-        <Link href="/" className="flex items-center gap-2">
+      <div className="container mx-auto flex h-16 items-center justify-between gap-4 px-4 md:px-6">
+        <Link href="/" className="flex items-center gap-2 mr-4">
           <LogoIcon />
-          <span className="text-xl font-bold font-headline text-primary">Trendify</span>
+          <span className="text-xl font-bold font-headline text-primary hidden sm:inline-block">Trendify</span>
         </Link>
-        <div className="relative ml-auto flex items-center gap-2 md:grow-0">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+        
+        {/* Desktop Search */}
+        <div className="relative hidden md:flex items-center flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             type="search"
             placeholder="Search for booming content..."
-            className="w-full rounded-full bg-secondary/80 pl-8 md:w-[300px] lg:w-[500px]"
+            className="w-full rounded-full bg-secondary/80 pl-9 md:w-[300px] lg:w-[500px]"
             onChange={(e) => onSearchChange(e.target.value)}
           />
         </div>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline">
-              <LayoutDashboard className="w-4 h-4 mr-2" />
-              Dashboard
+
+        {/* Mobile Search - Revealed */}
+        {isMobileSearchOpen && (
+          <div className="absolute top-0 left-0 w-full h-full bg-background z-20 flex items-center px-4 md:hidden">
+            <div className="relative w-full">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Search..."
+                className="w-full rounded-full bg-secondary/80 pl-9"
+                onChange={(e) => onSearchChange(e.target.value)}
+                autoFocus
+              />
+            </div>
+            <Button variant="ghost" size="icon" onClick={() => setMobileSearchOpen(false)}>
+              <X className="h-5 w-5"/>
             </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-80" align="end">
-            <AppSidebar 
-              posts={posts}
-              isPopover={true} 
-              sortMethod={sortMethod}
-              onSortChange={onSortChange}
-              onFilterClick={onFilterClick}
-              advancedTagsCount={advancedTagsCount}
-            />
-          </PopoverContent>
-        </Popover>
-        <div className="flex items-center gap-2">
+          </div>
+        )}
+
+        <div className={cn("flex items-center gap-1 md:gap-2 ml-auto", isMobileSearchOpen && 'opacity-0')}>
+          {/* Mobile Search Trigger */}
+          <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileSearchOpen(true)}>
+            <Search />
+          </Button>
+          
+          <Popover>
+            <PopoverTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <LayoutDashboard className="w-5 h-5" />
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80" align="end">
+              <AppSidebar 
+                posts={posts}
+                isPopover={true} 
+                sortMethod={sortMethod}
+                onSortChange={onSortChange}
+                onFilterClick={onFilterClick}
+                advancedTagsCount={advancedTagsCount}
+              />
+            </PopoverContent>
+          </Popover>
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                  <Avatar className="h-8 w-8">
+                <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                  <Avatar className="h-9 w-9">
                     <AvatarImage src={user.photoURL || ''} alt={user.displayName || ''} />
                     <AvatarFallback>{user.displayName?.charAt(0)}</AvatarFallback>
                   </Avatar>
@@ -118,26 +146,21 @@ export default function AppHeader({
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <div className="hidden items-center gap-2 md:flex">
-               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline"><LogIn className="mr-2 h-4 w-4" /> Log in</Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem onClick={handleGoogleSignIn}>
-                    <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 381.5 512 244 512 111.8 512 0 400.2 0 261.8 0 123.8 111.8 12.5 244 12.5c72.6 0 134.3 29.3 179.9 74.5L356.1 154.3c-34.4-33.4-85.3-54.3-138.2-54.3-109.1 0-198.3 88.3-198.3 197.8s89.2 197.8 198.3 197.8c114.9 0 181.7-83.3 185.5-161.4H244V261.8h244z"></path></svg>
-                    <span>Google</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleFacebookSignIn}>
-                    <FacebookIcon className="mr-2 h-4 w-4" />
-                    <span>Facebook</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <Button onClick={handleGoogleSignIn} variant="secondary">
-                <UserPlus className="mr-2 h-4 w-4" /> Sign up
-              </Button>
-            </div>
+             <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline"><LogIn className="mr-0 md:mr-2 h-4 w-4" /><span className="hidden md:inline">Log in</span></Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={handleGoogleSignIn}>
+                  <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 381.5 512 244 512 111.8 512 0 400.2 0 261.8 0 123.8 111.8 12.5 244 12.5c72.6 0 134.3 29.3 179.9 74.5L356.1 154.3c-34.4-33.4-85.3-54.3-138.2-54.3-109.1 0-198.3 88.3-198.3 197.8s89.2 197.8 198.3 197.8c114.9 0 181.7-83.3 185.5-161.4H244V261.8h244z"></path></svg>
+                  <span>Google</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleFacebookSignIn}>
+                  <FacebookIcon className="mr-2 h-4 w-4" />
+                  <span>Facebook</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
         </div>
       </div>
