@@ -68,7 +68,7 @@ export default function AppHeader({
           <Input
             type="search"
             placeholder="Search for booming content..."
-            className="w-full rounded-full bg-secondary/80 pl-8 md:w-[200px] lg:w-[320px]"
+            className="w-full rounded-full bg-secondary/80 pl-8 md:w-[300px] lg:w-[500px]"
             onChange={(e) => onSearchChange(e.target.value)}
           />
         </div>
