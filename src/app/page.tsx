@@ -170,7 +170,7 @@ export default function TrendifyPage() {
         <main className="flex-1">
           <div className="mb-5 flex flex-wrap items-center justify-between gap-y-2">
             <div>
-              <h1 className="text-2xl font-headline font-bold text-gray-800">{pageTitle}</h1>
+              <h1 className="text-2xl font-headline font-bold">{pageTitle}</h1>
               <p className="text-sm text-muted-foreground flex items-center gap-2"><Zap className="w-4 h-4 text-primary"/> {pageSubtitle}</p>
             </div>
             <div className="flex gap-2">
