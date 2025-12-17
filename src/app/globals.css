@@ -75,11 +75,6 @@
     animation: glowPulse 2s ease-in-out 3;
   }
 
-  .instagram-post-border {
-    border: 2px solid transparent;
-    background: linear-gradient(hsl(var(--card)), hsl(var(--card))) padding-box,
-                linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D) border-box;
-  }
   .primary-gradient {
     background: linear-gradient(45deg, hsl(0, 100%, 50%), hsl(260, 55%, 52%), hsl(190, 100%, 70%));
   }

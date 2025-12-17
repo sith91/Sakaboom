@@ -90,8 +90,7 @@ export default function PostCard({ post, onBoom, onTagClick }: PostCardProps) {
       onClick={handleCardClick}
       className={cn(
         'overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-1 flex flex-col cursor-pointer',
-        post.isNew && 'glow-pulse',
-        post.platform === 'instagram' && 'instagram-post-border'
+        post.isNew && 'glow-pulse'
       )}
     >
       <CardHeader className="p-0 relative">
