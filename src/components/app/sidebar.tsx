@@ -4,19 +4,32 @@ import { useMemo } from 'react';
 import type { Post } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { platforms } from '@/lib/data.tsx';
-import { LineChart, Tag } from 'lucide-react';
+import { platforms, trendingTags } from '@/lib/data.tsx';
+import { LineChart, Tag, Flame, Filter, ArrowDownUp } from 'lucide-react';
 import AITrendPredictor from './ai-trend-predictor';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '../ui/scroll-area';
+import { Button } from '../ui/button';
+import { Separator } from '../ui/separator';
 
 interface AppSidebarProps {
   posts: Post[];
   isPopover?: boolean;
+  sortMethod: string;
+  onSortChange: (method: string) => void;
+  onFilterClick: () => void;
+  advancedTagsCount: number;
 }
 
-export default function AppSidebar({ posts, isPopover = false }: AppSidebarProps) {
+export default function AppSidebar({ 
+  posts, 
+  isPopover = false,
+  sortMethod,
+  onSortChange,
+  onFilterClick,
+  advancedTagsCount
+}: AppSidebarProps) {
 
   const platformStats = useMemo(() => {
     const stats: Record<string, number> = {};
@@ -46,8 +59,51 @@ export default function AppSidebar({ posts, isPopover = false }: AppSidebarProps
       .map(([tag]) => tag);
   }, [posts]);
 
+  const sortOptions = ['trending', 'newest', 'booms', 'comments'];
+  const sortLabels: Record<string, string> = { trending: 'Trending', newest: 'Newest', booms: 'Most Booms', comments: 'Most Comments' };
+
+  const handleSortChange = () => {
+    const currentIndex = sortOptions.indexOf(sortMethod);
+    const nextIndex = (currentIndex + 1) % sortOptions.length;
+    onSortChange(sortOptions[nextIndex]);
+  };
+
   const SidebarContent = () => (
-    <div className="space-y-5">
+    <div className="space-y-4">
+       <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center text-base"><Flame className="w-5 h-5 mr-2" /> Booming Now</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-wrap gap-2">
+          {trendingTags.map(tag => (
+            <Button key={tag.name} variant="ghost" size="sm" className="rounded-full bg-secondary hover:bg-secondary/80 h-auto py-1 px-3">
+              {tag.icon} {tag.name}
+            </Button>
+          ))}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center text-base">Content Tools</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-2">
+           <Button variant="outline" onClick={handleSortChange}>
+              <ArrowDownUp className="w-4 h-4 mr-2" />
+              Sort by: {sortLabels[sortMethod]}
+            </Button>
+            <Button variant={advancedTagsCount > 0 ? "default" : "outline"} onClick={onFilterClick}>
+              <Filter className="w-4 h-4 mr-2" />
+              Advanced Filter
+              {advancedTagsCount > 0 && <Badge variant="secondary" className="ml-2">{advancedTagsCount}</Badge>}
+            </Button>
+        </CardContent>
+      </Card>
+
+      <AITrendPredictor posts={posts} />
+
+      <Separator />
+
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center text-base"><LineChart className="w-5 h-5 mr-2" /> Trending Platforms</CardTitle>
@@ -71,8 +127,6 @@ export default function AppSidebar({ posts, isPopover = false }: AppSidebarProps
         </CardContent>
       </Card>
 
-      <AITrendPredictor posts={posts} />
-
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center text-base"><Tag className="w-5 h-5 mr-2" /> Popular Tags</CardTitle>
@@ -88,7 +142,7 @@ export default function AppSidebar({ posts, isPopover = false }: AppSidebarProps
 
   if (isPopover) {
     return (
-      <ScrollArea className="h-[60vh] w-full">
+      <ScrollArea className="h-[70vh] w-full pr-3">
         <SidebarContent />
       </ScrollArea>
     );

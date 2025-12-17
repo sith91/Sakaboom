@@ -23,9 +23,20 @@ import { Post } from '@/lib/types';
 interface AppHeaderProps {
   onSearchChange: (query: string) => void;
   posts: Post[];
+  sortMethod: string;
+  onSortChange: (method: string) => void;
+  onFilterClick: () => void;
+  advancedTagsCount: number;
 }
 
-export default function AppHeader({ onSearchChange, posts }: AppHeaderProps) {
+export default function AppHeader({ 
+  onSearchChange,
+  posts,
+  sortMethod,
+  onSortChange,
+  onFilterClick,
+  advancedTagsCount
+}: AppHeaderProps) {
   const { toast } = useToast();
   const [user, setUser] = useState<any>(null); // Placeholder for user state
 
@@ -60,18 +71,25 @@ export default function AppHeader({ onSearchChange, posts }: AppHeaderProps) {
             className="w-full rounded-full bg-secondary/80 pl-8 md:w-[200px] lg:w-[320px]"
             onChange={(e) => onSearchChange(e.target.value)}
           />
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline" className="lg:hidden">
-                <LayoutDashboard className="w-4 h-4 mr-2" />
-                Dashboard
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-80" align="end">
-              <AppSidebar posts={posts} isPopover={true} />
-            </PopoverContent>
-          </Popover>
         </div>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline">
+              <LayoutDashboard className="w-4 h-4 mr-2" />
+              Dashboard
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-80" align="end">
+            <AppSidebar 
+              posts={posts}
+              isPopover={true} 
+              sortMethod={sortMethod}
+              onSortChange={onSortChange}
+              onFilterClick={onFilterClick}
+              advancedTagsCount={advancedTagsCount}
+            />
+          </PopoverContent>
+        </Popover>
         <div className="flex items-center gap-2">
           {user ? (
             <DropdownMenu>

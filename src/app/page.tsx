@@ -1,18 +1,19 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { Plus, Filter, ArrowDownUp, Flame, Zap, Search, LogIn, User, X } from 'lucide-react';
-import { initialPosts, trendingTags } from '@/lib/data';
+import { Plus, Search, User } from 'lucide-react';
+import { initialPosts } from '@/lib/data';
 import type { Post } from '@/lib/types';
 import AppHeader from '@/components/app/header';
 import PostCard from '@/components/app/post-card';
-import AppSidebar from '@/components/app/sidebar';
 import SubmitPostDialog from '@/components/app/submit-post-dialog';
-import AdvancedFilterDialog from '@/components/app/advanced-filter-dialog';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
 import { Facebook as FacebookIcon } from '@/components/icons';
+import AdvancedFilterDialog from '@/components/app/advanced-filter-dialog';
+import { X, Zap } from 'lucide-react';
+
 
 export default function TrendifyPage() {
   const [posts, setPosts] = useState<Post[]>(initialPosts);
@@ -135,54 +136,27 @@ export default function TrendifyPage() {
   if (!hydrated) {
     return null;
   }
-  
-  const sortOptions = ['trending', 'newest', 'booms', 'comments'];
-  const sortLabels: Record<string, string> = { trending: 'Trending', newest: 'Newest', booms: 'Most Booms', comments: 'Most Comments' };
-
-  const handleSortChange = () => {
-    const currentIndex = sortOptions.indexOf(sortMethod);
-    const nextIndex = (currentIndex + 1) % sortOptions.length;
-    setSortMethod(sortOptions[nextIndex]);
-  };
 
   const pageTitle = "Discover What's Booming";
   const pageSubtitle = "Fresh posts glow for easy spotting";
 
   return (
     <div className="bg-background min-h-screen text-foreground">
-      <AppHeader onSearchChange={setSearchQuery} posts={posts} />
+      <AppHeader
+        onSearchChange={setSearchQuery}
+        posts={posts}
+        sortMethod={sortMethod}
+        onSortChange={setSortMethod}
+        onFilterClick={() => setFilterDialogOpen(true)}
+        advancedTagsCount={advancedTags.length}
+      />
       
-      <div className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white py-2">
-        <div className="container mx-auto px-4 flex items-center gap-2 overflow-x-auto scrollbar-hide">
-          <h3 className="text-sm font-bold shrink-0 flex items-center gap-2"><Flame className="w-4 h-4"/> Booming Now:</h3>
-          {trendingTags.map(tag => (
-            <Button key={tag.name} variant="ghost" size="sm" className="rounded-full shrink-0 bg-white/20 hover:bg-white/30 text-white">
-              {tag.icon} {tag.name}
-            </Button>
-          ))}
-        </div>
-      </div>
-
-      <div className="container mx-auto flex max-w-[1400px] flex-col gap-5 p-4 lg:flex-row lg:py-5">
-        <AppSidebar
-          posts={posts}
-        />
+      <div className="container mx-auto flex max-w-[1400px] flex-col gap-5 p-4 lg:py-5">
         <main className="flex-1">
           <div className="mb-5 flex flex-wrap items-center justify-between gap-y-2">
             <div>
               <h1 className="text-2xl font-headline font-bold">{pageTitle}</h1>
               <p className="text-sm text-muted-foreground flex items-center gap-2"><Zap className="w-4 h-4 text-primary"/> {pageSubtitle}</p>
-            </div>
-            <div className="flex gap-2">
-              <Button variant={advancedTags.length > 0 ? "default" : "outline"} className="hidden sm:flex" onClick={() => setFilterDialogOpen(true)}>
-                <Filter className="w-4 h-4 mr-2" />
-                Advanced Filter
-                {advancedTags.length > 0 && <Badge variant="secondary" className="ml-2">{advancedTags.length}</Badge>}
-              </Button>
-              <Button variant="outline" onClick={handleSortChange}>
-                <ArrowDownUp className="w-4 h-4 mr-2" />
-                {sortLabels[sortMethod]}
-              </Button>
             </div>
           </div>
           
