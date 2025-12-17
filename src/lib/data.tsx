@@ -10,7 +10,7 @@ import {
   Plane,
   GraduationCap,
 } from 'lucide-react';
-import { Instagram, Twitter, Youtube, Tiktok, Facebook, Linkedin } from '@/components/icons';
+import { Instagram, Twitter, Youtube, Tiktok, Facebook, Linkedin, Weibo, WeChat, ShareChat, Roposo } from '@/components/icons';
 
 
 export const platforms: Record<string, Platform> = {
@@ -20,6 +20,10 @@ export const platforms: Record<string, Platform> = {
   tiktok: { id: 'tiktok', name: 'TikTok', icon: <Tiktok className="w-4 h-4" />, color: '#000000' },
   facebook: { id: 'facebook', name: 'Facebook', icon: <Facebook className="w-4 h-4" />, color: '#1877F2' },
   linkedin: { id: 'linkedin', name: 'LinkedIn', icon: <Linkedin className="w-4 h-4" />, color: '#0A66C2' },
+  weibo: { id: 'weibo', name: 'Weibo', icon: <Weibo className="w-4 h-4" />, color: '#df2029' },
+  wechat: { id: 'wechat', name: 'WeChat', icon: <WeChat className="w-4 h-4" />, color: '#09B83E' },
+  sharechat: { id: 'sharechat', name: 'ShareChat', icon: <ShareChat className="w-4 h-4" />, color: '#5F259F' },
+  roposo: { id: 'roposo', name: 'Roposo', icon: <Roposo className="w-4 h-4" />, color: '#000000' },
 };
 
 const findImage = (id: string) => {

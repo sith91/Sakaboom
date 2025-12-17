@@ -11,7 +11,7 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-const platformIds = ['instagram', 'twitter', 'youtube', 'tiktok', 'facebook', 'linkedin', 'unknown'] as const;
+const platformIds = ['instagram', 'twitter', 'youtube', 'tiktok', 'facebook', 'linkedin', 'weibo', 'wechat', 'sharechat', 'roposo', 'unknown'] as const;
 
 const IdentifyPlatformInputSchema = z.object({
   url: z.string().url().describe('The URL of the content to be identified.'),
@@ -55,6 +55,10 @@ const identifyPlatformFlow = ai.defineFlow(
     if (input.url.includes('tiktok.com')) return { platform: 'tiktok' };
     if (input.url.includes('facebook.com')) return { platform: 'facebook' };
     if (input.url.includes('linkedin.com')) return { platform: 'linkedin' };
+    if (input.url.includes('weibo.com')) return { platform: 'weibo' };
+    if (input.url.includes('wechat.com')) return { platform: 'wechat' };
+    if (input.url.includes('sharechat.com')) return { platform: 'sharechat' };
+    if (input.url.includes('roposo.com')) return { platform: 'roposo' };
 
     // If it's not an obvious one, use the AI.
     const {output} = await prompt(input);
