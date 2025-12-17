@@ -116,7 +116,7 @@ export default function AppHeader({ onSearchChange, posts }: AppHeaderProps) {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Button onClick={handleGoogleSignIn}>
+              <Button onClick={handleGoogleSignIn} variant="secondary">
                 <UserPlus className="mr-2 h-4 w-4" /> Sign up
               </Button>
             </div>

@@ -240,6 +240,7 @@ export default function TrendifyPage() {
       </div>
 
       <Button
+        variant="secondary"
         className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50"
         onClick={() => setSubmitDialogOpen(true)}
       >
