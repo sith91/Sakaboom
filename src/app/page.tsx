@@ -137,8 +137,8 @@ export default function TrendifyPage() {
     return null;
   }
 
-  const pageTitle = "Discover What's Booming";
-  const pageSubtitle = "Fresh posts glow for easy spotting";
+  const pageTitle = "People-Powered Social Search";
+  const pageSubtitle = "Discover what's trending, powered by people like you.";
 
   return (
     <div className="bg-background min-h-screen text-foreground">
@@ -197,13 +197,13 @@ export default function TrendifyPage() {
                     <h3 className="text-xl font-bold">Welcome to Trendify!</h3>
                     <p className="text-muted-foreground mt-2">Log in to see the hottest trends and boom your favorite posts.</p>
                     <div className="flex gap-4 mt-4">
-                        <Button onClick={handleGoogleSignIn}>
+                        <Button onClick={handleGoogleSignIn} variant="secondary">
                           <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 381.5 512 244 512 111.8 512 0 400.2 0 261.8 0 123.8 111.8 12.5 244 12.5c72.6 0 134.3 29.3 179.9 74.5L356.1 154.3c-34.4-33.4-85.3-54.3-138.2-54.3-109.1 0-198.3 88.3-198.3 197.8s89.2 197.8 198.3 197.8c114.9 0 181.7-83.3 185.5-161.4H244V261.8h244z"></path></svg>
-                          Log in with Google
+                          Sign Up with Google
                         </Button>
                         <Button onClick={handleFacebookSignIn} variant="outline">
                             <FacebookIcon className="mr-2 h-4 w-4" />
-                            Log in with Facebook
+                            Sign Up with Facebook
                         </Button>
                     </div>
                 </div>

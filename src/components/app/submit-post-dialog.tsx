@@ -236,8 +236,8 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2"><Rocket className="w-5 h-5" /> Share What's Booming</DialogTitle>
-          <DialogDescription>Paste a link from a social platform to share it on Trendify.</DialogDescription>
+          <DialogTitle className="flex items-center gap-2"><Rocket className="w-5 h-5" /> Share What's Trending</DialogTitle>
+          <DialogDescription>Help power the search. Paste a link from a social platform to share it.</DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid gap-2">

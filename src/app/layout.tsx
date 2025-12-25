@@ -16,8 +16,8 @@ const fontHeadline = Space_Grotesk({
 
 
 export const metadata: Metadata = {
-  title: 'Trendify - Discover What\'s Booming',
-  description: 'Aggregates trending content from various social media platforms.',
+  title: 'Trendify - People-Powered Social Search',
+  description: 'A people-powered social search engine to discover what\'s trending.',
 };
 
 export default function RootLayout({
