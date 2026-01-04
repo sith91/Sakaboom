@@ -28,7 +28,6 @@ import React, { useState } from 'react';
 
 interface PostCardProps {
   post: Post;
-  onBoom: (id: number) => void;
   onTagClick: (tag: string) => void;
 }
 
@@ -63,7 +62,7 @@ const getTagColor = (index: number) => {
     return tagColorClasses[index % tagColorClasses.length];
 }
 
-export default function PostCard({ post, onBoom, onTagClick }: PostCardProps) {
+export default function PostCard({ post, onTagClick }: PostCardProps) {
   const platformInfo = platforms[post.platform];
   const [imageError, setImageError] = useState(false);
 
@@ -77,7 +76,6 @@ export default function PostCard({ post, onBoom, onTagClick }: PostCardProps) {
     ) {
       return;
     }
-    onBoom(post.id); // This is a "view" boom
     window.open(post.url, '_blank', 'noopener,noreferrer');
   };
 
@@ -158,23 +156,8 @@ export default function PostCard({ post, onBoom, onTagClick }: PostCardProps) {
       </CardContent>
       <CardFooter className="flex-col items-start p-4 pt-0">
          <div className="flex justify-between items-center w-full mb-4">
-            <div className="flex items-center gap-2">
-                <Button 
-                  variant={post.isBoomed ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onBoom(post.id);
-                  }}
-                  className="rounded-full"
-                  >
-                  <span className="relative text-lg -mt-1">💥</span>
-                  <span className="ml-1 font-semibold">Boom it!</span>
-                </Button>
-            </div>
             <div className="flex items-center gap-4 text-muted-foreground text-sm">
                 <span className="flex items-center gap-1 font-semibold"><Users className="w-4 h-4 text-boom" />{post.boomers.toLocaleString()} Boomers</span>
-                <span className="flex items-center gap-1"><span className="relative text-lg -mt-1">💥</span>{post.booms.toLocaleString()}</span>
                 <span className="flex items-center gap-1"><MessageSquare className="w-4 h-4" />{post.comments}</span>
                 <span className="flex items-center gap-1"><Share2 className="w-4 h-4" />{post.shares}</span>
             </div>

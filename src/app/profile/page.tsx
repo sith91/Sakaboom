@@ -37,23 +37,6 @@ export default function ProfilePage() {
     }
   };
   
-  const handleBoom = (postId: number) => {
-    const post = allPosts.find(p => p.id === postId);
-    if (!post) return;
-
-    if (!post.isBoomed) {
-      setAllPosts(prevPosts =>
-        prevPosts.map(p =>
-          p.id === postId ? { ...p, booms: p.booms + 1, isBoomed: true } : p
-        )
-      );
-      toast({
-        title: 'Post Boomed!',
-        description: "You've boomed this post."
-      });
-    }
-  };
-  
   const handleTagClick = (tag: string) => {
     // This could navigate back to the home page with a filter
     toast({
@@ -166,7 +149,7 @@ export default function ProfilePage() {
                     {sharedPosts.length > 0 ? (
                         <div className="masonry-grid">
                         {sharedPosts.map(post => (
-                            <PostCard key={`shared-${post.id}`} post={post} onBoom={handleBoom} onTagClick={handleTagClick} />
+                            <PostCard key={`shared-${post.id}`} post={post} onTagClick={handleTagClick} />
                         ))}
                         </div>
                     ) : (
@@ -177,7 +160,7 @@ export default function ProfilePage() {
                     {viewedPosts.length > 0 ? (
                         <div className="masonry-grid">
                         {viewedPosts.map(post => (
-                            <PostCard key={`viewed-${post.id}`} post={post} onBoom={handleBoom} onTagClick={handleTagClick} />
+                            <PostCard key={`viewed-${post.id}`} post={post} onTagClick={handleTagClick} />
                         ))}
                         </div>
                     ) : (

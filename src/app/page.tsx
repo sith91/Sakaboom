@@ -108,23 +108,6 @@ export default function TrendifyPage() {
     });
   };
 
-  const handleBoom = (postId: number) => {
-    const post = posts.find(p => p.id === postId);
-    if (!post) return;
-
-    if (!post.isBoomed) {
-      setPosts(prevPosts =>
-        prevPosts.map(p =>
-          p.id === postId ? { ...p, booms: p.booms + 1, isBoomed: true } : p
-        )
-      );
-      toast({
-        title: 'Post Boomed!',
-        description: "You've boomed this post."
-      });
-    }
-  };
-
   const handleAddPost = (newPostData: Omit<Post, 'id' | 'boomers'>) => {
     const existingPost = posts.find(p => p.url === newPostData.url);
 
@@ -192,8 +175,7 @@ export default function TrendifyPage() {
               {displayedPosts.map(post => (
                 <PostCard 
                   key={post.id} 
-                  post={post} 
-                  onBoom={handleBoom}
+                  post={post}
                   onTagClick={handleTagClick}
                 />
               ))}
