@@ -159,12 +159,21 @@ export default function PostCard({ post, onBoom, onTagClick }: PostCardProps) {
       <CardFooter className="flex-col items-start p-4 pt-0">
          <div className="flex justify-between items-center w-full mb-4">
             <div className="flex items-center gap-2">
-                <span className="font-bold text-sm flex items-center gap-1">
-                    <span className="relative">💥</span>
-                    {post.booms.toLocaleString()}
-                </span>
+                <Button 
+                  variant={post.isBoomed ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onBoom(post.id);
+                  }}
+                  className="rounded-full"
+                  >
+                  <span className="relative text-lg -mt-1">💥</span>
+                  <span className="ml-1 font-semibold">{post.isBoomed ? 'Boomed!' : 'Boom it!'}</span>
+                </Button>
             </div>
             <div className="flex items-center gap-4 text-muted-foreground text-sm">
+                <span className="flex items-center gap-1"><Users className="w-4 h-4" />{post.booms.toLocaleString()}</span>
                 <span className="flex items-center gap-1"><MessageSquare className="w-4 h-4" />{post.comments}</span>
                 <span className="flex items-center gap-1"><Share2 className="w-4 h-4" />{post.shares}</span>
             </div>
