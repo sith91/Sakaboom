@@ -24,7 +24,7 @@ import {
 } from 'lucide-react';
 import { Star } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useState } from 'react';
 
 interface PostCardProps {
   post: Post;
@@ -65,6 +65,7 @@ const getTagColor = (index: number) => {
 
 export default function PostCard({ post, onBoom, onTagClick }: PostCardProps) {
   const platformInfo = platforms[post.platform];
+  const [imageError, setImageError] = useState(false);
 
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
     // Check if the click target is a button, a link, a badge, or inside one
@@ -104,14 +105,21 @@ export default function PostCard({ post, onBoom, onTagClick }: PostCardProps) {
             <PlayCircle className="w-3 h-3 mr-1" /> Video
           </Badge>
         )}
-        <div className="aspect-video relative w-full">
+        <div className="aspect-video relative w-full bg-secondary">
+          {imageError ? (
+            <div className="w-full h-full flex items-center justify-center text-muted-foreground/50" style={{color: platformInfo?.color}}>
+                {React.cloneElement(platformInfo?.icon as React.ReactElement, { className: 'w-16 h-16 opacity-50' })}
+            </div>
+          ) : (
             <Image
                 src={post.media}
                 alt={post.text}
                 fill
                 className="object-cover"
                 data-ai-hint={post.mediaHint}
+                onError={() => setImageError(true)}
             />
+          )}
         </div>
       </CardHeader>
       <CardContent className="p-4 flex-grow">
