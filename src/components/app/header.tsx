@@ -1,7 +1,7 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, LogIn, UserPlus, LogOut, LayoutDashboard, X } from 'lucide-react';
+import { Search, LogIn, UserPlus, LogOut, LayoutDashboard, X, User } from 'lucide-react';
 import Link from 'next/link';
 import { LogoIcon, Facebook as FacebookIcon } from '@/components/icons';
 import { useToast } from '@/hooks/use-toast';
@@ -138,6 +138,13 @@ export default function AppHeader({
                     </p>
                   </div>
                 </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/profile">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut}>
                   <LogOut className="mr-2 h-4 w-4" />

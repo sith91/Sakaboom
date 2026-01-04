@@ -63,11 +63,17 @@ export interface UserProfile {
   email?: string | null;
   displayName?: string | null;
   photoURL?: string | null;
-  createdAt: Timestamp;
+  createdAt: Date;
 }
 
 export interface Boom {
     userId: string;
     postId: string;
     createdAt: Timestamp;
+}
+
+export interface UserProfileData {
+  user: UserProfile;
+  sharedPosts: Post[];
+  viewedPosts: Post[];
 }

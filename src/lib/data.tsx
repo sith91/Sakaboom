@@ -1,4 +1,4 @@
-import type { Post, Platform, Category, TrendingTag, FilterTagGroup } from './types';
+import type { Post, Platform, Category, TrendingTag, FilterTagGroup, UserProfileData } from './types';
 import { PlaceHolderImages } from './placeholder-images';
 import {
   Code2,
@@ -193,3 +193,24 @@ export const trendingTags: TrendingTag[] = [
 ];
 
 export const popularSidebarTags: string[] = ['Travel', 'Food', 'Technology', 'Fashion', 'Photography'];
+
+
+export const mockUserProfile: UserProfileData = {
+  user: {
+    uid: '12345',
+    displayName: 'Jane Doe',
+    email: 'jane.doe@example.com',
+    photoURL: 'https://i.pravatar.cc/150?u=jane_doe',
+    createdAt: new Date(),
+  },
+  sharedPosts: [
+    initialPosts[2],
+    initialPosts[4]
+  ],
+  viewedPosts: [
+    initialPosts[0],
+    initialPosts[1],
+    initialPosts[3],
+    initialPosts[6]
+  ]
+};
