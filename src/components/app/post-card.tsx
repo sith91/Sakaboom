@@ -22,6 +22,7 @@ import {
   PlayCircle,
   Users,
   ImageIcon,
+  Zap,
 } from 'lucide-react';
 import { Star } from 'lucide-react';
 import React, { useState } from 'react';
@@ -29,6 +30,7 @@ import React, { useState } from 'react';
 interface PostCardProps {
   post: Post;
   onTagClick: (tag: string) => void;
+  onBoom: () => void;
 }
 
 function getTimeAgo(timestamp: Date): string {
@@ -62,7 +64,7 @@ const getTagColor = (index: number) => {
     return tagColorClasses[index % tagColorClasses.length];
 }
 
-export default function PostCard({ post, onTagClick }: PostCardProps) {
+export default function PostCard({ post, onTagClick, onBoom }: PostCardProps) {
   const platformInfo = platforms[post.platform];
   const [imageError, setImageError] = useState(false);
 
@@ -76,6 +78,9 @@ export default function PostCard({ post, onTagClick }: PostCardProps) {
     ) {
       return;
     }
+    // Assume user is logged in for boom to happen.
+    // In a real app, you'd check auth state.
+    onBoom();
     window.open(post.url, '_blank', 'noopener,noreferrer');
   };
 
@@ -158,6 +163,7 @@ export default function PostCard({ post, onTagClick }: PostCardProps) {
          <div className="flex justify-between items-center w-full mb-4">
             <div className="flex items-center gap-4 text-muted-foreground text-sm">
                 <span className="flex items-center gap-1 font-semibold"><Users className="w-4 h-4 text-boom" />{post.boomers.toLocaleString()} Boomers</span>
+                <span className="flex items-center gap-1 font-semibold"><Zap className="w-4 h-4 text-boom" />{post.booms.toLocaleString()} Booms</span>
                 <span className="flex items-center gap-1"><MessageSquare className="w-4 h-4" />{post.comments}</span>
                 <span className="flex items-center gap-1"><Share2 className="w-4 h-4" />{post.shares}</span>
             </div>

@@ -107,6 +107,16 @@ export default function TrendifyPage() {
         description: `Showing posts with tag: ${tag}`
     });
   };
+  
+  const handleBoom = (postId: number) => {
+    setPosts(prevPosts =>
+      prevPosts.map(p =>
+        p.id === postId && !p.isBoomed
+          ? { ...p, booms: p.booms + 1, isBoomed: true }
+          : p
+      )
+    );
+  };
 
   const handleAddPost = (newPostData: Omit<Post, 'id' | 'boomers'>) => {
     const existingPost = posts.find(p => p.url === newPostData.url);
@@ -177,6 +187,7 @@ export default function TrendifyPage() {
                   key={post.id} 
                   post={post}
                   onTagClick={handleTagClick}
+                  onBoom={() => handleBoom(post.id)}
                 />
               ))}
             </div>
