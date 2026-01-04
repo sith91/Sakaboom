@@ -125,11 +125,15 @@ export default function TrendifyPage() {
     }
   };
 
-  const handleAddPost = (newPostData: Omit<Post, 'id'>) => {
+  const handleAddPost = (newPostData: Omit<Post, 'id' | 'boomers'>) => {
     const existingPost = posts.find(p => p.url === newPostData.url);
 
     if (existingPost) {
-        handleBoom(existingPost.id);
+        setPosts(prevPosts =>
+          prevPosts.map(p =>
+            p.id === existingPost.id ? { ...p, boomers: p.boomers + 1, booms: p.booms + 1, isBoomed: true } : p
+          )
+        );
         toast({
             title: 'Link Already Shared!',
             description: "This link is already on Trendify. Your submission has been counted as a boom for the existing post!",
@@ -138,6 +142,7 @@ export default function TrendifyPage() {
         const newPost: Post = {
             ...newPostData,
             id: posts.length + 1,
+            boomers: 1,
         };
         setPosts(prev => [newPost, ...prev]);
     }

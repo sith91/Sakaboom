@@ -24,7 +24,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 interface SubmitPostDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onPostSubmit: (post: Omit<Post, 'id' >) => void;
+  onPostSubmit: (post: Omit<Post, 'id' | 'boomers'>) => void;
 }
 
 const debounce = (func: (...args: any[]) => void, delay: number) => {
@@ -205,7 +205,7 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
 
     setIsSubmitting(true);
     
-    const newPost: Omit<Post, 'id'> = {
+    const newPost: Omit<Post, 'id' | 'boomers'> = {
       media: previewData.image,
       mediaHint: previewData.imageHint,
       platform: detectedPlatform as any,

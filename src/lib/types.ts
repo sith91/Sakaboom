@@ -19,6 +19,7 @@ export interface Post {
   text: string;
   caption: string;
   booms: number;
+  boomers: number;
   comments: number;
   submitter: string;
   isVerified: boolean;
