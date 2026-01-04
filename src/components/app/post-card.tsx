@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -23,7 +24,6 @@ import {
   ImageIcon,
 } from 'lucide-react';
 import { Star } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
 interface PostCardProps {
@@ -169,7 +169,7 @@ export default function PostCard({ post, onBoom, onTagClick }: PostCardProps) {
                   className="rounded-full"
                   >
                   <span className="relative text-lg -mt-1">💥</span>
-                  <span className="ml-1 font-semibold">{post.isBoomed ? 'Boomed!' : 'Boom it!'}</span>
+                  <span className="ml-1 font-semibold">Boom it!</span>
                 </Button>
             </div>
             <div className="flex items-center gap-4 text-muted-foreground text-sm">
