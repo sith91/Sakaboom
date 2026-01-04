@@ -126,11 +126,21 @@ export default function TrendifyPage() {
   };
 
   const handleAddPost = (newPostData: Omit<Post, 'id'>) => {
-    const newPost: Post = {
-      ...newPostData,
-      id: posts.length + 1,
-    };
-    setPosts(prev => [newPost, ...prev]);
+    const existingPost = posts.find(p => p.url === newPostData.url);
+
+    if (existingPost) {
+        handleBoom(existingPost.id);
+        toast({
+            title: 'Link Already Shared!',
+            description: "This link is already on Trendify. Your submission has been counted as a boom for the existing post!",
+        });
+    } else {
+        const newPost: Post = {
+            ...newPostData,
+            id: posts.length + 1,
+        };
+        setPosts(prev => [newPost, ...prev]);
+    }
   };
   
   if (!hydrated) {
@@ -201,7 +211,7 @@ export default function TrendifyPage() {
                           <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 381.5 512 244 512 111.8 512 0 400.2 0 261.8 0 123.8 111.8 12.5 244 12.5c72.6 0 134.3 29.3 179.9 74.5L356.1 154.3c-34.4-33.4-85.3-54.3-138.2-54.3-109.1 0-198.3 88.3-198.3 197.8s89.2 197.8 198.3 197.8c114.9 0 181.7-83.3 185.5-161.4H244V261.8h244z"></path></svg>
                           Sign Up with Google
                         </Button>
-                        <Button onClick={handleFacebookSignIn} variant="outline">
+                        <Button onClick={handleFacebookSignIn} variant="secondary">
                             <FacebookIcon className="mr-2 h-4 w-4" />
                             Sign Up with Facebook
                         </Button>
