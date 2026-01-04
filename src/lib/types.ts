@@ -64,6 +64,8 @@ export interface UserProfile {
   displayName?: string | null;
   photoURL?: string | null;
   createdAt: Date;
+  points: number;
+  sharesData: boolean;
 }
 
 export interface Boom {

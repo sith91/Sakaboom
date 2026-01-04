@@ -202,6 +202,8 @@ export const mockUserProfile: UserProfileData = {
     email: 'jane.doe@example.com',
     photoURL: 'https://i.pravatar.cc/150?u=jane_doe',
     createdAt: new Date(),
+    points: 25,
+    sharesData: true,
   },
   sharedPosts: [
     initialPosts[2],
