@@ -181,7 +181,7 @@ export default function TrendifyPage() {
           )}
 
           {displayedPosts.length > 0 ? (
-            <div className="masonry-grid">
+            <div className="border rounded-lg">
               {displayedPosts.map(post => (
                 <PostCard 
                   key={post.id} 
@@ -192,7 +192,7 @@ export default function TrendifyPage() {
               ))}
             </div>
           ) : (
-             <div className="flex flex-col items-center justify-center text-center py-20 bg-card rounded-lg shadow-sm">
+             <div className="flex flex-col items-center justify-center text-center py-20 bg-card rounded-lg">
                 {user ? (
                   <>
                     <Search className="w-16 h-16 text-muted-foreground/50 mb-4" />

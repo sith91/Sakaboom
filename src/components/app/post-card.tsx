@@ -93,82 +93,69 @@ export default function PostCard({ post, onTagClick, onBoom }: PostCardProps) {
     <Card
       onClick={handleCardClick}
       className={cn(
-        'overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-1 flex flex-col cursor-pointer',
+        'overflow-hidden shadow-none border-b rounded-none flex flex-col cursor-pointer transition-colors hover:bg-secondary/50',
         post.isNew && 'glow-pulse'
       )}
     >
-      <CardHeader className="p-0 relative">
-        {post.isCelebrity && (
-          <Badge className="absolute top-2 left-2 z-10 bg-yellow-400 text-black hover:bg-yellow-400">
-            <Star className="w-3 h-3 mr-1" /> Celebrity
-          </Badge>
-        )}
-        {post.hasVideo && (
-          <Badge variant="secondary" className="absolute top-2 right-2 z-10">
-            <PlayCircle className="w-3 h-3 mr-1" /> Video
-          </Badge>
-        )}
-        <div className="aspect-video relative w-full bg-secondary">
+      <CardHeader className="p-4 relative flex-row gap-4">
+         <div className="w-16 h-16 relative shrink-0">
           {imageError ? (
-            <div className="w-full h-full flex items-center justify-center text-muted-foreground/50" style={{color: platformInfo?.color}}>
-                {React.cloneElement(platformInfo?.icon as React.ReactElement, { className: 'w-16 h-16 opacity-50' })}
+            <div className="w-full h-full flex items-center justify-center rounded-lg bg-secondary text-muted-foreground/50" style={{color: platformInfo?.color}}>
+                {React.cloneElement(platformInfo?.icon as React.ReactElement, { className: 'w-8 h-8 opacity-50' })}
             </div>
           ) : (
             <Image
                 src={post.media}
                 alt={post.text}
                 fill
-                className="object-cover"
+                className="object-cover rounded-lg"
                 data-ai-hint={post.mediaHint}
                 onError={() => setImageError(true)}
             />
           )}
         </div>
-      </CardHeader>
-      <CardContent className="p-4 flex-grow">
-        <div className="flex justify-between items-start mb-2">
-          <div className="flex items-center gap-2 text-sm font-semibold" style={{ color: platformInfo?.color }}>
-            {platformInfo?.icon}
-            <span>{platformInfo?.name}</span>
-          </div>
-          <time className="text-xs text-muted-foreground">{getTimeAgo(post.timestamp)}</time>
-        </div>
-        <p className="mb-3 text-sm text-foreground/80 line-clamp-3">{post.caption}</p>
-        
-        {post.followerCount && (
-          <div className="flex items-center gap-3 text-xs text-muted-foreground mb-3">
-            <span className="flex items-center gap-1"><Users className="w-3 h-3" />{post.followerCount}</span>
-            {post.postCount && <span className="flex items-center gap-1"><ImageIcon className="w-3 h-3" />{post.postCount}</span>}
-          </div>
-        )}
 
-        <div className="flex flex-wrap gap-1 mb-4">
+        <div className='flex flex-col flex-1'>
+            <div className="flex justify-between items-start mb-2">
+                <div className="flex items-center gap-2 text-sm font-semibold" style={{ color: platformInfo?.color }}>
+                    {platformInfo?.icon}
+                    <span>{platformInfo?.name}</span>
+                </div>
+                <time className="text-xs text-muted-foreground">{getTimeAgo(post.timestamp)}</time>
+            </div>
+            <p className="mb-3 text-sm text-foreground/80 line-clamp-3">{post.caption}</p>
+        </div>
+      </CardHeader>
+      
+      <CardContent className="px-4 pb-2 pt-0">
+        <div className="flex flex-wrap gap-1 mb-2">
           {post.tags.map((tag, index) => (
             <Badge
               key={tag}
               variant="outline"
               className={cn(
-                "cursor-pointer",
+                "cursor-pointer font-normal",
                 getTagColor(index)
               )}
               data-tag-badge
               onClick={(e) => handleTagBadgeClick(e, tag)}
             >
-              {tag}
+              #{tag}
             </Badge>
           ))}
         </div>
       </CardContent>
-      <CardFooter className="flex-col items-start p-4 pt-0">
-         <div className="flex justify-between items-center w-full mb-4">
+      
+      <CardFooter className="flex-col items-start p-4 pt-2">
+         <div className="flex justify-between items-center w-full mb-3">
             <div className="flex items-center gap-4 text-muted-foreground text-sm">
-                <span className="flex items-center gap-1 font-semibold"><Users className="w-4 h-4 text-boom" />{post.boomers.toLocaleString()} Boomers</span>
-                <span className="flex items-center gap-1 font-semibold"><Zap className="w-4 h-4 text-boom" />{post.booms.toLocaleString()} Booms</span>
+                <span className="flex items-center gap-1 font-semibold"><Users className="w-4 h-4" />{post.boomers.toLocaleString()} Boomers</span>
+                <span className="flex items-center gap-1 font-semibold"><Zap className="w-4 h-4" />{post.booms.toLocaleString()} Booms</span>
                 <span className="flex items-center gap-1"><MessageSquare className="w-4 h-4" />{post.comments}</span>
                 <span className="flex items-center gap-1"><Share2 className="w-4 h-4" />{post.shares}</span>
             </div>
         </div>
-        <div className="flex justify-between items-center w-full text-xs text-muted-foreground border-t pt-3">
+        <div className="flex justify-between items-center w-full text-xs text-muted-foreground">
           <div className="flex items-center gap-1 font-semibold">
             {post.isVerified ? (
               <CheckCircle className="w-3.5 h-3.5 text-primary" />
