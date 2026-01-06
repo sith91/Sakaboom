@@ -181,7 +181,7 @@ export default function TrendifyPage() {
           )}
 
           {displayedPosts.length > 0 ? (
-            <div className="border rounded-lg">
+            <div className="masonry-grid">
               {displayedPosts.map(post => (
                 <PostCard 
                   key={post.id} 

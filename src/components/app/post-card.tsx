@@ -93,11 +93,11 @@ export default function PostCard({ post, onTagClick, onBoom }: PostCardProps) {
     <Card
       onClick={handleCardClick}
       className={cn(
-        'overflow-hidden shadow-none border-b rounded-none flex flex-col cursor-pointer transition-colors hover:bg-secondary/50',
+        'overflow-hidden shadow-sm border flex flex-col cursor-pointer transition-colors hover:bg-secondary/50',
         post.isNew && 'glow-pulse'
       )}
     >
-      <CardHeader className="p-4 relative flex-row gap-4">
+      <CardHeader className="p-4 relative flex-row gap-4 items-start">
          <div className="w-16 h-16 relative shrink-0">
           {imageError ? (
             <div className="w-full h-full flex items-center justify-center rounded-lg bg-secondary text-muted-foreground/50" style={{color: platformInfo?.color}}>
@@ -127,7 +127,7 @@ export default function PostCard({ post, onTagClick, onBoom }: PostCardProps) {
         </div>
       </CardHeader>
       
-      <CardContent className="px-4 pb-2 pt-0">
+      <CardContent className="px-4 pb-2 pt-0 mt-auto">
         <div className="flex flex-wrap gap-1 mb-2">
           {post.tags.map((tag, index) => (
             <Badge
