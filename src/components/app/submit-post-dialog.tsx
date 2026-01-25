@@ -110,7 +110,7 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
           title: title || `Link from ${platformName}`,
           description: finalDescription
         });
-        setComment(finalDescription);
+        setComment(prev => prev || finalDescription);
       } else {
         setDetectedPlatform('error');
         toast({
@@ -262,41 +262,43 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
             )}
           </div>
           
-          {previewData && (
-             <div className="grid gap-2">
-              <label className="font-medium flex items-center gap-2"><MessageSquare className="w-4 h-4"/> Your Comment</label>
-              <Textarea value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Add your thoughts about this content..." />
-            </div>
-          )}
+          <div className="grid gap-2">
+            <label className="font-medium flex items-center gap-2"><MessageSquare className="w-4 h-4"/> Description</label>
+            <Textarea 
+              value={comment} 
+              onChange={(e) => setComment(e.target.value)} 
+              placeholder="Add a description, or we'll generate one from the link." 
+              disabled={isLoading}
+            />
+          </div>
 
-          {previewData && (
-            <div className="grid gap-2">
-              <div className="flex justify-between items-center">
-                <label className="font-medium flex items-center gap-2"><Tags className="w-4 h-4"/> Tags</label>
-                <Button size="sm" variant="ghost" onClick={handleGenerateTags} disabled={isSuggestingTags}>
-                  {isSuggestingTags ? <Loader2 className="h-4 w-4 animate-spin mr-2"/> : <Wand2 className="h-4 w-4 mr-2"/>}
-                  Suggest with AI
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-2 p-2 border rounded-lg min-h-[40px]">
-                {Array.from(tags).map(tag => (
-                  <Badge key={tag} variant="default">
-                    {tag}
-                    <button onClick={() => handleRemoveTag(tag)} className="ml-1 rounded-full hover:bg-primary-foreground/20 p-0.5">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/></svg>
-                    </button>
-                  </Badge>
-                ))}
-                <Input
-                  className="flex-1 border-none shadow-none focus-visible:ring-0 h-auto p-0 m-1 bg-transparent"
-                  value={tagInput}
-                  onChange={(e) => setTagInput(e.target.value)}
-                  onKeyDown={handleTagInputKeyDown}
-                  placeholder="Add tags..."
-                />
-              </div>
+          <div className="grid gap-2">
+            <div className="flex justify-between items-center">
+              <label className="font-medium flex items-center gap-2"><Tags className="w-4 h-4"/> Flairs (Tags)</label>
+              <Button size="sm" variant="ghost" onClick={handleGenerateTags} disabled={isSuggestingTags || !detectedPlatform}>
+                {isSuggestingTags ? <Loader2 className="h-4 w-4 animate-spin mr-2"/> : <Wand2 className="h-4 w-4 mr-2"/>}
+                Suggest with AI
+              </Button>
             </div>
-          )}
+            <div className="flex flex-wrap gap-2 p-2 border rounded-lg min-h-[40px]">
+              {Array.from(tags).map(tag => (
+                <Badge key={tag} variant="default">
+                  {tag}
+                  <button onClick={() => handleRemoveTag(tag)} className="ml-1 rounded-full hover:bg-primary-foreground/20 p-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/></svg>
+                  </button>
+                </Badge>
+              ))}
+              <Input
+                className="flex-1 border-none shadow-none focus-visible:ring-0 h-auto p-0 m-1 bg-transparent"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={handleTagInputKeyDown}
+                placeholder="Add tags..."
+                disabled={isLoading}
+              />
+            </div>
+          </div>
 
           <div className="mt-2 p-4 bg-secondary/50 rounded-lg min-h-[100px] flex items-center justify-center">
             {isLoading ? (
