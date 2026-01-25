@@ -16,8 +16,8 @@ const fontHeadline = Inter({
 
 
 export const metadata: Metadata = {
-  title: 'Trendify - People-Powered Social Search',
-  description: 'A people-powered social search engine to discover what\'s trending.',
+  title: 'Trendify - The People-Powered Search Engine',
+  description: 'A search engine powered by people, for people. Discover what\'s trending across the web.',
 };
 
 export default function RootLayout({

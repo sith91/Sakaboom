@@ -9,6 +9,7 @@ import {
   FlaskConical,
   Plane,
   GraduationCap,
+  Link2,
 } from 'lucide-react';
 import { Instagram, Twitter, Youtube, Tiktok, Facebook, Linkedin, Weibo, WeChat, ShareChat, Roposo } from '@/components/icons';
 
@@ -24,6 +25,7 @@ export const platforms: Record<string, Platform> = {
   wechat: { id: 'wechat', name: 'WeChat', icon: <WeChat className="w-4 h-4" />, color: '#09B83E' },
   sharechat: { id: 'sharechat', name: 'ShareChat', icon: <ShareChat className="w-4 h-4" />, color: '#5F259F' },
   roposo: { id: 'roposo', name: 'Roposo', icon: <Roposo className="w-4 h-4" />, color: '#000000' },
+  unknown: { id: 'unknown', name: 'Website', icon: <Link2 className="w-4 h-4" />, color: '#808080' },
 };
 
 const findImage = (id: string) => {

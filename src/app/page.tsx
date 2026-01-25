@@ -37,7 +37,7 @@ export default function LandingPage() {
         </div>
 
         <p className="text-lg md:text-xl text-muted-foreground mb-8">
-          The People-Powered Social Search Engine
+          A search engine powered by people, for people.
         </p>
 
         <form onSubmit={handleSearch} className="relative mb-4">
@@ -73,7 +73,7 @@ export default function LandingPage() {
         </Link>
       </div>
        <footer className="absolute bottom-4 text-center text-sm text-muted-foreground">
-        Discover what's trending, powered by people like you.
+        Discover what's trending across the web, powered by people like you.
       </footer>
     </div>
   );

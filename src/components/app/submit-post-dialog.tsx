@@ -92,12 +92,13 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
 
       const { platform: platformId } = platformResult;
 
-      if (platformId && platformId !== 'unknown' && platforms[platformId]) {
+      if (platformId && platforms[platformId]) {
         setDetectedPlatform(platformId);
         
         const { title, description, image } = metadataResult;
         
-        const finalDescription = description || title || `A very interesting post from ${platforms[platformId].name}.`;
+        const platformName = platforms[platformId]?.name || 'the website';
+        const finalDescription = description || title || `An interesting link from ${platformName}.`;
         
         const defaultImg = PlaceHolderImages.find(i => i.id === '12');
 
@@ -105,17 +106,17 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
           platform: platforms[platformId],
           url: url,
           image: image || defaultImg?.imageUrl,
-          imageHint: 'social media preview',
-          title: title || `Post from ${platforms[platformId].name}`,
+          imageHint: 'website preview',
+          title: title || `Link from ${platformName}`,
           description: finalDescription
         });
         setComment(finalDescription);
       } else {
-        setDetectedPlatform('unknown');
+        setDetectedPlatform('error');
         toast({
             variant: "destructive",
-            title: "Unsupported Platform",
-            description: "We couldn't recognize this URL. Please paste a link from a supported social platform.",
+            title: "Unsupported Link",
+            description: "We couldn't analyze the URL. The link may be private, incorrect, or from an unsupported site.",
         });
         setPreviewData(null);
       }
@@ -189,8 +190,8 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
   };
 
   const handleSubmit = () => {
-    if (!detectedPlatform || detectedPlatform === 'unknown' || !previewData) {
-      toast({ variant: 'destructive', title: 'Cannot submit', description: 'A valid platform must be detected.' });
+    if (!detectedPlatform || !previewData) {
+      toast({ variant: 'destructive', title: 'Cannot submit', description: 'A valid link must be detected and previewed.' });
       return;
     }
     if (tags.size === 0) {
@@ -236,13 +237,13 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2"><Rocket className="w-5 h-5" /> Share What's Trending</DialogTitle>
-          <DialogDescription>Help power the search. Paste a link from a social platform to share it.</DialogDescription>
+          <DialogTitle className="flex items-center gap-2"><Rocket className="w-5 h-5" /> Share a Link</DialogTitle>
+          <DialogDescription>Help power the search. Paste a link from any website to share it with the community.</DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid gap-2">
-            <label htmlFor="post-url" className="font-medium flex items-center gap-2"><Link className="w-4 h-4"/> Social Media Link</label>
-            <Input id="post-url" value={url} onChange={handleUrlChange} placeholder="e.g., https://instagram.com/p/..." />
+            <label htmlFor="post-url" className="font-medium flex items-center gap-2"><Link className="w-4 h-4"/> Website Link</label>
+            <Input id="post-url" value={url} onChange={handleUrlChange} placeholder="e.g., https://www.theverge.com/..." />
           </div>
 
           <div className="p-3 bg-secondary/50 rounded-lg flex items-center gap-3 text-sm">
@@ -254,7 +255,7 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
                 {platforms[detectedPlatform].icon}
                 <span>{platforms[detectedPlatform].name}</span>
               </div>
-            ) : detectedPlatform === 'unknown' || detectedPlatform === 'error' ? (
+            ) : detectedPlatform === 'error' ? (
                 <span className='font-semibold text-destructive'>Unsupported</span>
             ) : (
               <span>None</span>
