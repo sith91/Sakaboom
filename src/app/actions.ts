@@ -9,9 +9,9 @@ export async function predictEmergingTrendsAction(input: PredictEmergingTrendsIn
   try {
     const result = await predictEmergingTrends(input);
     return result;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error in predictEmergingTrendsAction:', error);
-    throw new Error('Failed to predict emerging trends.');
+    throw new Error(error.message || 'Failed to predict emerging trends.');
   }
 }
 
@@ -19,9 +19,9 @@ export async function suggestRelevantTagsAction(input: SuggestRelevantTagsInput)
   try {
     const result = await suggestRelevantTags(input);
     return result;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error in suggestRelevantTagsAction:', error);
-    throw new Error('Failed to suggest relevant tags.');
+    throw new Error(error.message || 'Failed to suggest relevant tags.');
   }
 }
 
@@ -29,9 +29,9 @@ export async function identifyPlatformAction(input: IdentifyPlatformInput): Prom
     try {
         const result = await identifyPlatform(input);
         return result;
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error in identifyPlatformAction:', error);
-        throw new Error('Failed to identify platform.');
+        throw new Error(error.message || 'Failed to identify platform.');
     }
 }
 
@@ -39,8 +39,8 @@ export async function getUrlMetadataAction(input: GetUrlMetadataInput): Promise<
     try {
         const result = await getUrlMetadata(input);
         return result;
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error in getUrlMetadataAction:', error);
-        throw new Error('Failed to get URL metadata.');
+        throw new Error(error.message || 'Failed to get URL metadata.');
     }
 }

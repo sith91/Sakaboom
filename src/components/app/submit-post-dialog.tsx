@@ -120,13 +120,13 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
         });
         setPreviewData(null);
       }
-    } catch (error) {
+    } catch (error: any) {
         console.error(error);
         setDetectedPlatform('error');
         toast({
             variant: "destructive",
             title: "Error",
-            description: "Could not analyze the URL. The link may be private, incorrect, or from an unsupported site.",
+            description: error.message || "Could not analyze the URL. The link may be private, incorrect, or from an unsupported site.",
         });
         setPreviewData(null);
     } finally {
