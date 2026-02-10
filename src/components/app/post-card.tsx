@@ -1,4 +1,3 @@
-
 'use client';
 
 import Image from 'next/image';
@@ -9,28 +8,20 @@ import {
   CardHeader,
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { platforms } from '@/lib/data.tsx';
 import type { Post } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import {
-  MessageSquare,
-  Share2,
-  CheckCircle,
-  User,
   ExternalLink,
-  PlayCircle,
   Users,
-  ImageIcon,
   Zap,
 } from 'lucide-react';
-import { Star } from 'lucide-react';
 import React, { useState } from 'react';
 
 interface PostCardProps {
   post: Post;
   onTagClick: (tag: string) => void;
-  onBoom: () => void;
+  onBoom?: () => void;
 }
 
 function getTimeAgo(timestamp: Date): string {
@@ -80,7 +71,7 @@ export default function PostCard({ post, onTagClick, onBoom }: PostCardProps) {
     }
     // Assume user is logged in for boom to happen.
     // In a real app, you'd check auth state.
-    onBoom();
+    onBoom?.();
     window.open(post.url, '_blank', 'noopener,noreferrer');
   };
 
@@ -146,34 +137,20 @@ export default function PostCard({ post, onTagClick, onBoom }: PostCardProps) {
         </div>
       </CardContent>
       
-      <CardFooter className="flex-col items-start p-4 pt-2">
-         <div className="flex justify-between items-center w-full mb-3">
-            <div className="flex items-center gap-4 text-muted-foreground text-sm">
-                <span className="flex items-center gap-1 font-semibold"><Users className="w-4 h-4" />{post.boomers.toLocaleString()} Boomers</span>
-                <span className="flex items-center gap-1 font-semibold"><Zap className="w-4 h-4" />{post.booms.toLocaleString()} Booms</span>
-                <span className="flex items-center gap-1"><MessageSquare className="w-4 h-4" />{post.comments}</span>
-                <span className="flex items-center gap-1"><Share2 className="w-4 h-4" />{post.shares}</span>
-            </div>
+      <CardFooter className="flex justify-between items-center p-4 pt-2">
+        <div className="flex items-center gap-4 text-muted-foreground text-sm">
+            <span className="flex items-center gap-1 font-semibold"><Users className="w-4 h-4" />{post.boomers.toLocaleString()} Boomers</span>
+            <span className="flex items-center gap-1 font-semibold"><Zap className="w-4 h-4" />{post.booms.toLocaleString()} Booms</span>
         </div>
-        <div className="flex justify-between items-center w-full text-xs text-muted-foreground">
-          <div className="flex items-center gap-1 font-semibold">
-            {post.isVerified ? (
-              <CheckCircle className="w-3.5 h-3.5 text-primary" />
-            ) : (
-              <User className="w-3.5 h-3.5" />
-            )}
-            @{post.submitter}
-          </div>
-          <a
-            href={post.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 hover:text-primary"
-            onClick={(e) => e.stopPropagation()}
-          >
-            Source <ExternalLink className="w-3.5 h-3.5" />
-          </a>
-        </div>
+        <a
+          href={post.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1 text-xs hover:text-primary"
+          onClick={(e) => e.stopPropagation()}
+        >
+          Source <ExternalLink className="w-3.5 h-3.5" />
+        </a>
       </CardFooter>
     </Card>
   );
