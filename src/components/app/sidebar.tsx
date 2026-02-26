@@ -59,8 +59,8 @@ export default function AppSidebar({
       .map(([tag]) => tag);
   }, [posts]);
 
-  const sortOptions = ['trending', 'newest', 'booms', 'comments'];
-  const sortLabels: Record<string, string> = { trending: 'Trending', newest: 'Newest', booms: 'Most Booms', comments: 'Most Comments' };
+  const sortOptions = ['trending', 'newest', 'booms'];
+  const sortLabels: Record<string, string> = { trending: 'Trending', newest: 'Newest', booms: 'Most Booms' };
 
   const handleSortChange = () => {
     const currentIndex = sortOptions.indexOf(sortMethod);

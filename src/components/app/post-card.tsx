@@ -17,12 +17,12 @@ import {
   Zap,
 } from 'lucide-react';
 import React, { useState } from 'react';
-import SubmissionsDialog from './submissions-dialog';
 
 interface PostCardProps {
   post: Post;
   onTagClick: (tag: string) => void;
   onBoom?: () => void;
+  onBoomersClick?: (post: Post) => void;
 }
 
 function getTimeAgo(timestamp: Date): string {
@@ -56,10 +56,9 @@ const getTagColor = (index: number) => {
     return tagColorClasses[index % tagColorClasses.length];
 }
 
-export default function PostCard({ post, onTagClick, onBoom }: PostCardProps) {
+export default function PostCard({ post, onTagClick, onBoom, onBoomersClick }: PostCardProps) {
   const platformInfo = platforms[post.platform];
   const [imageError, setImageError] = useState(false);
-  const [submissionsOpen, setSubmissionsOpen] = useState(false);
 
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
     // Check if the click target is a button, a link, a badge, or inside one
@@ -71,8 +70,6 @@ export default function PostCard({ post, onTagClick, onBoom }: PostCardProps) {
     ) {
       return;
     }
-    // Assume user is logged in for boom to happen.
-    // In a real app, you'd check auth state.
     onBoom?.();
     window.open(post.url, '_blank', 'noopener,noreferrer');
   };
@@ -145,9 +142,13 @@ export default function PostCard({ post, onTagClick, onBoom }: PostCardProps) {
               <button 
                 onClick={(e) => {
                   e.stopPropagation();
-                  setSubmissionsOpen(true);
+                  onBoomersClick?.(post);
                 }}
-                className="flex items-center gap-1 font-semibold hover:text-primary cursor-pointer"
+                disabled={!onBoomersClick}
+                className={cn(
+                  "flex items-center gap-1 font-semibold",
+                  onBoomersClick ? "hover:text-primary cursor-pointer" : "cursor-default"
+                )}
               >
                 <Users className="w-4 h-4" />{post.boomers.toLocaleString()} Boomers
               </button>
@@ -164,12 +165,6 @@ export default function PostCard({ post, onTagClick, onBoom }: PostCardProps) {
           </a>
         </CardFooter>
       </Card>
-      <SubmissionsDialog 
-        open={submissionsOpen}
-        onOpenChange={setSubmissionsOpen}
-        submissions={post.submissions}
-        postUrl={post.url}
-      />
     </>
   );
 }

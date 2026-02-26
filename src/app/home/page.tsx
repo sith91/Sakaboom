@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { Plus, Search, User } from 'lucide-react';
+import { ArrowLeft, Plus, Search, User, X, Zap } from 'lucide-react';
 import { initialPosts } from '@/lib/data';
 import type { Post, Submission } from '@/lib/types';
 import AppHeader from '@/components/app/header';
@@ -12,7 +12,6 @@ import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
 import { Facebook as FacebookIcon } from '@/components/icons';
 import AdvancedFilterDialog from '@/components/app/advanced-filter-dialog';
-import { X, Zap } from 'lucide-react';
 
 
 export default function TrendifyHomePage() {
@@ -24,6 +23,7 @@ export default function TrendifyHomePage() {
   const [advancedTags, setAdvancedTags] = useState<string[]>([]);
   const [hydrated, setHydrated] = useState(false);
   const [user, setUser] = useState<any>(null); // Placeholder for user state
+  const [viewingSubmissionsFor, setViewingSubmissionsFor] = useState<Post | null>(null);
 
   const { toast } = useToast();
 
@@ -46,7 +46,28 @@ export default function TrendifyHomePage() {
     return Array.from(tagSet);
   }, [posts]);
 
+  const handleBoomersClick = (post: Post) => {
+    setViewingSubmissionsFor(post);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleBackToFeed = () => {
+      setViewingSubmissionsFor(null);
+  };
+
   const displayedPosts = useMemo(() => {
+    if (viewingSubmissionsFor) {
+        const parentPost = posts.find(p => p.id === viewingSubmissionsFor.id) || viewingSubmissionsFor;
+        return parentPost.submissions.map((submission, index) => ({
+            ...parentPost,
+            id: parentPost.id * 1000 + index, // Create a unique ID for the key
+            caption: submission.description,
+            timestamp: submission.timestamp,
+            submitter: submission.submitter,
+            submissions: [submission], // The "submission" for this card is just itself
+        })).sort((a,b) => b.timestamp.getTime() - a.timestamp.getTime());
+    }
+
     let filteredPosts = [...posts];
     
     // Advanced Tag Search (All tags must match)
@@ -73,15 +94,14 @@ export default function TrendifyHomePage() {
       switch (sortMethod) {
         case 'newest': return b.timestamp.getTime() - a.timestamp.getTime();
         case 'booms': return b.booms - a.booms;
-        case 'comments': return b.comments - a.comments;
         case 'trending':
         default:
-          const scoreA = a.booms + a.comments * 2 + a.shares * 3;
-          const scoreB = b.booms + b.comments * 2 + b.shares * 3;
+          const scoreA = a.booms;
+          const scoreB = b.booms;
           return scoreB - scoreA;
       }
     });
-  }, [posts, searchQuery, sortMethod, advancedTags]);
+  }, [posts, searchQuery, sortMethod, advancedTags, viewingSubmissionsFor]);
   
   const handleApplyAdvancedFilter = (tags: string[]) => {
     setAdvancedTags(tags);
@@ -100,6 +120,9 @@ export default function TrendifyHomePage() {
   };
 
   const handleTagClick = (tag: string) => {
+    if (viewingSubmissionsFor) {
+        handleBackToFeed();
+    }
     setAdvancedTags([tag]);
     window.scrollTo({ top: 0, behavior: 'smooth' });
     toast({
@@ -163,8 +186,8 @@ export default function TrendifyHomePage() {
     return null;
   }
 
-  const pageTitle = "What's Trending Now";
-  const pageSubtitle = "The latest posts, powered by people like you.";
+  const pageTitle = viewingSubmissionsFor ? `Submissions for Link` : "What's Trending Now";
+  const pageSubtitle = viewingSubmissionsFor ? `${viewingSubmissionsFor.submissions.length} perspectives on the same story.` : "The latest posts, powered by people like you.";
 
   return (
     <div className="bg-background min-h-screen text-foreground">
@@ -184,9 +207,14 @@ export default function TrendifyHomePage() {
               <h1 className="text-2xl font-headline font-bold">{pageTitle}</h1>
               <p className="text-sm text-muted-foreground flex items-center gap-2"><Zap className="w-4 h-4 text-primary"/> {pageSubtitle}</p>
             </div>
+             {viewingSubmissionsFor && (
+                <Button onClick={handleBackToFeed} variant="outline">
+                    <ArrowLeft className="w-4 h-4 mr-2"/> Back to Main Feed
+                </Button>
+            )}
           </div>
           
-          {advancedTags.length > 0 && (
+          {advancedTags.length > 0 && !viewingSubmissionsFor && (
              <div className="mb-4 flex items-center gap-2 flex-wrap">
                 <h3 className="text-sm font-medium">Active Filters:</h3>
                 {advancedTags.map(tag => (
@@ -205,7 +233,8 @@ export default function TrendifyHomePage() {
                   key={post.id} 
                   post={post}
                   onTagClick={handleTagClick}
-                  onBoom={() => handleBoom(post.id)}
+                  onBoom={() => handleBoom(viewingSubmissionsFor ? viewingSubmissionsFor.id : post.id)}
+                  onBoomersClick={!viewingSubmissionsFor ? handleBoomersClick : undefined}
                 />
               ))}
             </div>
