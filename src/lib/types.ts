@@ -11,6 +11,12 @@ export interface Platform {
   gradient?: string;
 }
 
+export interface Submission {
+  submitter: string;
+  description: string;
+  timestamp: Date;
+}
+
 export interface Post {
   id: number;
   media: string;
@@ -30,6 +36,7 @@ export interface Post {
   hasVideo: boolean;
   shares: number;
   timestamp: Date;
+  submissions: Submission[];
   isCelebrity?: boolean;
   followerCount?: string;
   following?: string;

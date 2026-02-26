@@ -17,6 +17,7 @@ import {
   Zap,
 } from 'lucide-react';
 import React, { useState } from 'react';
+import SubmissionsDialog from './submissions-dialog';
 
 interface PostCardProps {
   post: Post;
@@ -58,6 +59,7 @@ const getTagColor = (index: number) => {
 export default function PostCard({ post, onTagClick, onBoom }: PostCardProps) {
   const platformInfo = platforms[post.platform];
   const [imageError, setImageError] = useState(false);
+  const [submissionsOpen, setSubmissionsOpen] = useState(false);
 
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
     // Check if the click target is a button, a link, a badge, or inside one
@@ -81,77 +83,93 @@ export default function PostCard({ post, onTagClick, onBoom }: PostCardProps) {
   };
 
   return (
-    <Card
-      onClick={handleCardClick}
-      className={cn(
-        'overflow-hidden shadow-sm border flex flex-col cursor-pointer transition-colors hover:bg-secondary/50',
-        post.isNew && 'glow-pulse'
-      )}
-    >
-      <CardHeader className="p-4 relative flex-row gap-4 items-start">
-         <div className="w-16 h-16 relative shrink-0">
-          {imageError ? (
-            <div className="w-full h-full flex items-center justify-center rounded-lg bg-secondary text-muted-foreground/50" style={{color: platformInfo?.color}}>
-                {React.cloneElement(platformInfo?.icon as React.ReactElement, { className: 'w-8 h-8 opacity-50' })}
-            </div>
-          ) : (
-            <Image
-                src={post.media}
-                alt={post.text}
-                fill
-                className="object-cover rounded-lg"
-                data-ai-hint={post.mediaHint}
-                onError={() => setImageError(true)}
-            />
-          )}
-        </div>
+    <>
+      <Card
+        onClick={handleCardClick}
+        className={cn(
+          'overflow-hidden shadow-sm border flex flex-col cursor-pointer transition-colors hover:bg-secondary/50',
+          post.isNew && 'glow-pulse'
+        )}
+      >
+        <CardHeader className="p-4 relative flex-row gap-4 items-start">
+          <div className="w-16 h-16 relative shrink-0">
+            {imageError ? (
+              <div className="w-full h-full flex items-center justify-center rounded-lg bg-secondary text-muted-foreground/50" style={{color: platformInfo?.color}}>
+                  {React.cloneElement(platformInfo?.icon as React.ReactElement, { className: 'w-8 h-8 opacity-50' })}
+              </div>
+            ) : (
+              <Image
+                  src={post.media}
+                  alt={post.text}
+                  fill
+                  className="object-cover rounded-lg"
+                  data-ai-hint={post.mediaHint}
+                  onError={() => setImageError(true)}
+              />
+            )}
+          </div>
 
-        <div className='flex flex-col flex-1'>
-            <div className="flex justify-between items-start mb-2">
-                <div className="flex items-center gap-2 text-sm font-semibold" style={{ color: platformInfo?.color }}>
-                    {platformInfo?.icon}
-                    <span>{platformInfo?.name}</span>
-                </div>
-                <time className="text-xs text-muted-foreground">{getTimeAgo(post.timestamp)}</time>
-            </div>
-            <p className="mb-3 text-sm text-foreground/80 line-clamp-3">{post.caption}</p>
-        </div>
-      </CardHeader>
-      
-      <CardContent className="px-4 pb-2 pt-0 mt-auto">
-        <div className="flex flex-wrap gap-1 mb-2">
-          {post.tags.map((tag, index) => (
-            <Badge
-              key={tag}
-              variant="outline"
-              className={cn(
-                "cursor-pointer font-normal",
-                getTagColor(index)
-              )}
-              data-tag-badge
-              onClick={(e) => handleTagBadgeClick(e, tag)}
-            >
-              #{tag}
-            </Badge>
-          ))}
-        </div>
-      </CardContent>
-      
-      <CardFooter className="flex justify-between items-center p-4 pt-2">
-        <div className="flex items-center gap-4 text-muted-foreground text-sm">
-            <span className="flex items-center gap-1 font-semibold"><Users className="w-4 h-4" />{post.boomers.toLocaleString()} Boomers</span>
-            <span className="flex items-center gap-1 font-semibold"><Zap className="w-4 h-4" />{post.booms.toLocaleString()} Booms</span>
-        </div>
-        <a
-          href={post.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-1 text-xs hover:text-primary"
-          onClick={(e) => e.stopPropagation()}
-        >
-          Source <ExternalLink className="w-3.5 h-3.5" />
-        </a>
-      </CardFooter>
-    </Card>
+          <div className='flex flex-col flex-1'>
+              <div className="flex justify-between items-start mb-2">
+                  <div className="flex items-center gap-2 text-sm font-semibold" style={{ color: platformInfo?.color }}>
+                      {platformInfo?.icon}
+                      <span>{platformInfo?.name}</span>
+                  </div>
+                  <time className="text-xs text-muted-foreground">{getTimeAgo(post.timestamp)}</time>
+              </div>
+              <p className="mb-3 text-sm text-foreground/80 line-clamp-3">{post.caption}</p>
+          </div>
+        </CardHeader>
+        
+        <CardContent className="px-4 pb-2 pt-0 mt-auto">
+          <div className="flex flex-wrap gap-1 mb-2">
+            {post.tags.map((tag, index) => (
+              <Badge
+                key={tag}
+                variant="outline"
+                className={cn(
+                  "cursor-pointer font-normal",
+                  getTagColor(index)
+                )}
+                data-tag-badge
+                onClick={(e) => handleTagBadgeClick(e, tag)}
+              >
+                #{tag}
+              </Badge>
+            ))}
+          </div>
+        </CardContent>
+        
+        <CardFooter className="flex justify-between items-center p-4 pt-2">
+          <div className="flex items-center gap-4 text-muted-foreground text-sm">
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSubmissionsOpen(true);
+                }}
+                className="flex items-center gap-1 font-semibold hover:text-primary cursor-pointer"
+              >
+                <Users className="w-4 h-4" />{post.boomers.toLocaleString()} Boomers
+              </button>
+              <span className="flex items-center gap-1 font-semibold"><Zap className="w-4 h-4" />{post.booms.toLocaleString()} Booms</span>
+          </div>
+          <a
+            href={post.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 text-xs hover:text-primary"
+            onClick={(e) => e.stopPropagation()}
+          >
+            Source <ExternalLink className="w-3.5 h-3.5" />
+          </a>
+        </CardFooter>
+      </Card>
+      <SubmissionsDialog 
+        open={submissionsOpen}
+        onOpenChange={setSubmissionsOpen}
+        submissions={post.submissions}
+        postUrl={post.url}
+      />
+    </>
   );
 }

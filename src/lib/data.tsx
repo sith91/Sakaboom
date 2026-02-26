@@ -1,4 +1,4 @@
-import type { Post, Platform, Category, TrendingTag, FilterTagGroup, UserProfileData } from './types';
+import type { Post, Platform, Category, TrendingTag, FilterTagGroup, UserProfileData, Submission } from './types';
 import { PlaceHolderImages } from './placeholder-images';
 import {
   Code2,
@@ -34,6 +34,10 @@ const findImage = (id: string) => {
   return { imageUrl: img.imageUrl, imageHint: img.imageHint };
 }
 
+const createSubmissions = (submitter: string, description: string, timestamp: Date): Submission[] => {
+    return [{ submitter, description, timestamp }];
+};
+
 export const initialPosts: Post[] = [
   {
     id: 1,
@@ -43,7 +47,7 @@ export const initialPosts: Post[] = [
     text: "New photoshoot in Dubai! The architecture here is absolutely breathtaking. 🇦🇪✨ #Dubai #Travel #Fashion #Photoshoot #MiaKhalifa",
     caption: "Living my best life in Dubai! The architecture, the culture, everything is simply amazing. Can't wait to share more from this trip! ✨🌆 #DubaiLife #TravelBlogger #Influencer #MiddleEast #LuxuryTravel",
     booms: 1247,
-    boomers: 12,
+    boomers: 1,
     comments: 892,
     submitter: "miakhalifa",
     isVerified: true,
@@ -54,6 +58,7 @@ export const initialPosts: Post[] = [
     hasVideo: false,
     shares: 345,
     timestamp: new Date(Date.now() - 1800000), // 30 minutes ago
+    submissions: createSubmissions("miakhalifa", "Living my best life in Dubai! The architecture, the culture, everything is simply amazing. Can't wait to share more from this trip! ✨🌆 #DubaiLife #TravelBlogger #Influencer #MiddleEast #LuxuryTravel", new Date(Date.now() - 1800000)),
     isCelebrity: true,
     followerCount: "8.7M",
     following: "423",
@@ -69,7 +74,7 @@ export const initialPosts: Post[] = [
     text: "Beautiful hotel in Colombo with amazing ocean views! Perfect for a weekend getaway.",
     caption: "Just checked into this stunning hotel in Colombo! The ocean view from my room is absolutely breathtaking. Highly recommended for anyone visiting Sri Lanka! 🇱🇰✨ #Colombo #SriLanka #Travel #Hotels #Luxury #OceanView",
     booms: 842,
-    boomers: 5,
+    boomers: 1,
     comments: 156,
     submitter: "travelguru",
     isVerified: false,
@@ -80,6 +85,7 @@ export const initialPosts: Post[] = [
     hasVideo: false,
     shares: 42,
     timestamp: new Date(Date.now() - 86400000), // 1 day ago
+    submissions: createSubmissions("travelguru", "Just checked into this stunning hotel in Colombo! The ocean view from my room is absolutely breathtaking. Highly recommended for anyone visiting Sri Lanka! 🇱🇰✨ #Colombo #SriLanka #Travel #Hotels #Luxury #OceanView", new Date(Date.now() - 86400000)),
     location: "Colombo, Sri Lanka",
     likes: "3.2k"
   },
@@ -91,7 +97,7 @@ export const initialPosts: Post[] = [
     text: "Amazing seafood restaurant in Colombo! Fresh catch every day. #Colombo #Food #Seafood",
     caption: "Discovered this hidden gem in Colombo! The seafood is incredibly fresh and the service is outstanding. A must-visit for food lovers! 🦐🐟 #ColomboEats #SriLankaFood #Seafood #Restaurants #Foodie",
     booms: 521,
-    boomers: 8,
+    boomers: 2,
     comments: 89,
     submitter: "foodexplorer",
     isVerified: true,
@@ -102,6 +108,18 @@ export const initialPosts: Post[] = [
     hasVideo: false,
     shares: 24,
     timestamp: new Date(Date.now() - 3600000), // 1 hour ago
+    submissions: [
+        {
+            submitter: 'foodexplorer',
+            description: "Discovered this hidden gem in Colombo! The seafood is incredibly fresh and the service is outstanding. A must-visit for food lovers! 🦐🐟 #ColomboEats #SriLankaFood #Seafood #Restaurants #Foodie",
+            timestamp: new Date(Date.now() - 3600000)
+        },
+        {
+            submitter: 'seafoodlover',
+            description: "I second this! Best calamari in town. You have to try their garlic butter sauce.",
+            timestamp: new Date(Date.now() - 1800000)
+        }
+    ],
     likes: "1.8k",
   },
   {
@@ -112,7 +130,7 @@ export const initialPosts: Post[] = [
     text: "Complete travel guide to Colombo - Best hotels, restaurants and attractions!",
     caption: "Just published my comprehensive travel guide to Colombo! Covering the best hotels, restaurants, attractions, and hidden gems. Perfect for first-time visitors! 🇱🇰 #Colombo #TravelGuide #SriLanka #Hotels #Restaurants #TravelTips",
     booms: 934,
-    boomers: 3,
+    boomers: 1,
     comments: 203,
     submitter: "travelvlogger",
     isVerified: true,
@@ -123,6 +141,7 @@ export const initialPosts: Post[] = [
     hasVideo: true,
     shares: 87,
     timestamp: new Date(Date.now() - 172800000), // 2 days ago
+    submissions: createSubmissions("travelvlogger", "Just published my comprehensive travel guide to Colombo! Covering the best hotels, restaurants, attractions, and hidden gems. Perfect for first-time visitors! 🇱🇰 #Colombo #TravelGuide #SriLanka #Hotels #Restaurants #TravelTips", new Date(Date.now() - 172800000)),
     views: "124k",
   },
   {
@@ -133,7 +152,7 @@ export const initialPosts: Post[] = [
     text: "Luxury resort in Maldives with overwater bungalows! Paradise on earth.",
     caption: "This luxury resort in Maldives is absolutely incredible! Waking up to crystal clear waters right from your overwater bungalow is a dream come true. Perfect for honeymooners! 💑🌴 #Maldives #Luxury #Resorts #OverwaterBungalows #Honeymoon #Travel",
     booms: 1567,
-    boomers: 21,
+    boomers: 1,
     comments: 324,
     submitter: "luxurytraveler",
     isVerified: false,
@@ -144,6 +163,7 @@ export const initialPosts: Post[] = [
     hasVideo: false,
     shares: 156,
     timestamp: new Date(Date.now() - 259200000), // 3 days ago
+    submissions: createSubmissions("luxurytraveler", "This luxury resort in Maldives is absolutely incredible! Waking up to crystal clear waters right from your overwater bungalow is a dream come true. Perfect for honeymooners! 💑🌴 #Maldives #Luxury #Resorts #OverwaterBungalows #Honeymoon #Travel", new Date(Date.now() - 259200000)),
     location: "Maldives",
     likes: "8.9k"
   },
@@ -155,7 +175,7 @@ export const initialPosts: Post[] = [
     text: "Street food tour in Bangkok! Insanely delicious and affordable.",
     caption: "Just spent 24 hours eating my way through Bangkok's street food scene! From pad thai to mango sticky rice, everything was amazing! 🍜🥭 #Bangkok #StreetFood #Thailand #FoodTour #Travel #Foodie",
     booms: 721,
-    boomers: 15,
+    boomers: 1,
     comments: 142,
     submitter: "streetfoodking",
     isVerified: false,
@@ -166,6 +186,7 @@ export const initialPosts: Post[] = [
     hasVideo: true,
     shares: 68,
     timestamp: new Date(Date.now() - 7200000), // 2 hours ago
+    submissions: createSubmissions("streetfoodking", "Just spent 24 hours eating my way through Bangkok's street food scene! From pad thai to mango sticky rice, everything was amazing! 🍜🥭 #Bangkok #StreetFood #Thailand #FoodTour #Travel #Foodie", new Date(Date.now() - 7200000)),
     views: "2.1M",
   },
   {
@@ -176,7 +197,7 @@ export const initialPosts: Post[] = [
     text: "Cozy cafe in Tokyo with the best matcha latte I've ever had!",
     caption: "Found this adorable hidden cafe in Tokyo! The matcha latte is perfection and the atmosphere is so cozy. Perfect spot for working or relaxing with friends. ☕️🍵 #Tokyo #Cafes #Matcha #Japan #Coffee #HiddenGems",
     booms: 432,
-    boomers: 9,
+    boomers: 1,
     comments: 78,
     submitter: "cafehopper",
     isVerified: true,
@@ -187,6 +208,7 @@ export const initialPosts: Post[] = [
     hasVideo: false,
     shares: 32,
     timestamp: new Date(Date.now() - 43200000), // 12 hours ago
+    submissions: createSubmissions("cafehopper", "Found this adorable hidden cafe in Tokyo! The matcha latte is perfection and the atmosphere is so cozy. Perfect spot for working or relaxing with friends. ☕️🍵 #Tokyo #Cafes #Matcha #Japan #Coffee #HiddenGems", new Date(Date.now() - 43200000)),
     location: "Tokyo, Japan",
     likes: "4.3k"
   },

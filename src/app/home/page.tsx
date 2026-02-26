@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Plus, Search, User } from 'lucide-react';
 import { initialPosts } from '@/lib/data';
-import type { Post } from '@/lib/types';
+import type { Post, Submission } from '@/lib/types';
 import AppHeader from '@/components/app/header';
 import PostCard from '@/components/app/post-card';
 import SubmitPostDialog from '@/components/app/submit-post-dialog';
@@ -118,24 +118,42 @@ export default function TrendifyHomePage() {
     );
   };
 
-  const handleAddPost = (newPostData: Omit<Post, 'id' | 'boomers'>) => {
+  const handleAddPost = (newPostData: Omit<Post, 'id' | 'boomers' | 'submissions'>) => {
     const existingPost = posts.find(p => p.url === newPostData.url);
 
     if (existingPost) {
         setPosts(prevPosts =>
-          prevPosts.map(p =>
-            p.id === existingPost.id ? { ...p, boomers: p.boomers + 1, booms: p.booms + 1, isBoomed: true } : p
-          )
+          prevPosts.map(p => {
+            if (p.id === existingPost.id) {
+                const newSubmission: Submission = {
+                    submitter: newPostData.submitter,
+                    description: newPostData.caption,
+                    timestamp: new Date()
+                };
+                return {
+                  ...p,
+                  boomers: p.submissions.length + 1,
+                  submissions: [...p.submissions, newSubmission],
+                };
+            }
+            return p;
+          })
         );
         toast({
             title: 'Link Already Shared!',
-            description: "This link is already on Trendify. Your submission has been counted as a boom for the existing post!",
+            description: "Your perspective has been added to the existing post!",
         });
     } else {
+        const newSubmission: Submission = {
+            submitter: newPostData.submitter,
+            description: newPostData.caption,
+            timestamp: newPostData.timestamp,
+        };
         const newPost: Post = {
             ...newPostData,
             id: posts.length + 1,
             boomers: 1,
+            submissions: [newSubmission],
         };
         setPosts(prev => [newPost, ...prev]);
     }

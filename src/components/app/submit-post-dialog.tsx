@@ -24,7 +24,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 interface SubmitPostDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onPostSubmit: (post: Omit<Post, 'id' | 'boomers'>) => void;
+  onPostSubmit: (post: Omit<Post, 'id' | 'boomers' | 'submissions'>) => void;
 }
 
 const debounce = (func: (...args: any[]) => void, delay: number) => {
@@ -210,7 +210,7 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
 
     setIsSubmitting(true);
     
-    const newPost: Omit<Post, 'id' | 'boomers'> = {
+    const newPost: Omit<Post, 'id' | 'boomers' | 'submissions'> = {
       media: previewData.image,
       mediaHint: previewData.imageHint,
       platform: detectedPlatform as any,
@@ -272,7 +272,6 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
               value={comment} 
               onChange={(e) => setComment(e.target.value)} 
               placeholder="Add a description, or we'll generate one from the link." 
-              disabled={isLoading}
             />
           </div>
 
