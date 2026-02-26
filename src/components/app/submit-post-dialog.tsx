@@ -110,7 +110,11 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
           title: title || `Link from ${platformName}`,
           description: finalDescription
         });
-        setComment(prev => prev || finalDescription);
+        
+        if (!comment) {
+            setComment(finalDescription);
+        }
+
       } else {
         setDetectedPlatform('error');
         toast({
@@ -134,7 +138,7 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
     }
   };
 
-  const detectPlatformDebounced = useCallback(debounce(detectPlatform, 700), []);
+  const detectPlatformDebounced = useCallback(debounce(detectPlatform, 700), [comment]);
 
   const handleTagInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && tagInput.trim()) {
@@ -242,7 +246,7 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid gap-2">
-            <label htmlFor="post-url" className="font-medium flex items-center gap-2"><Link className="w-4 h-4"/> Website Link</label>
+            <label htmlFor="post-url" className="font-medium flex items-center gap-2"><Link className="w-4 h-4"/> Web/Social/Location Link</label>
             <Input id="post-url" value={url} onChange={handleUrlChange} placeholder="e.g., https://www.theverge.com/..." />
           </div>
 
