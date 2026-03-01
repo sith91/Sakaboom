@@ -65,7 +65,9 @@ export default function PostCard({ post, onTagClick, onBoom, onBoomersClick }: P
     ) {
       return;
     }
-    onBoom?.();
+    if (onBoom) {
+        onBoom();
+    }
     window.open(post.url, '_blank', 'noopener,noreferrer');
   };
 
@@ -78,11 +80,11 @@ export default function PostCard({ post, onTagClick, onBoom, onBoomersClick }: P
     <Card
       onClick={handleCardClick}
       className={cn(
-        'group overflow-hidden shadow-sm border flex flex-col md:flex-row w-full cursor-pointer transition-colors hover:bg-secondary/50',
+        'group overflow-hidden shadow-sm border flex flex-col w-full cursor-pointer transition-colors hover:bg-secondary/50',
         post.isNew && 'glow-pulse'
       )}
     >
-      <div className="relative w-full md:w-40 lg:w-48 h-40 md:h-auto shrink-0">
+      <div className="relative w-full h-40 shrink-0">
         {imageError ? (
           <div className="w-full h-full flex items-center justify-center bg-secondary" style={{color: platformInfo?.color}}>
             {React.cloneElement(platformInfo?.icon as React.ReactElement, { className: 'w-10 h-10 opacity-50' })}

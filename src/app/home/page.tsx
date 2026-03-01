@@ -132,6 +132,14 @@ export default function TrendifyHomePage() {
   };
   
   const handleBoom = (postId: number) => {
+    if (!user) {
+        toast({
+            title: "Login Required",
+            description: "Please log in to boom posts and participate.",
+            variant: "destructive"
+        });
+        return;
+    }
     setPosts(prevPosts =>
       prevPosts.map(p =>
         p.id === postId && !p.isBoomed
@@ -227,7 +235,7 @@ export default function TrendifyHomePage() {
           )}
 
           {displayedPosts.length > 0 ? (
-            <div className="flex flex-col gap-4">
+            <div className="masonry-grid">
               {displayedPosts.map(post => (
                 <PostCard 
                   key={post.id} 
