@@ -82,7 +82,7 @@ export default function PostCard({ post, onTagClick, onBoom, onBoomersClick }: P
         post.isNew && 'glow-pulse'
       )}
     >
-      <div className="relative w-full md:w-48 lg:w-64 h-48 md:h-auto shrink-0">
+      <div className="relative w-full md:w-40 lg:w-48 h-40 md:h-auto shrink-0">
         {imageError ? (
           <div className="w-full h-full flex items-center justify-center bg-secondary" style={{color: platformInfo?.color}}>
             {React.cloneElement(platformInfo?.icon as React.ReactElement, { className: 'w-10 h-10 opacity-50' })}
@@ -99,7 +99,7 @@ export default function PostCard({ post, onTagClick, onBoom, onBoomersClick }: P
         )}
       </div>
 
-      <div className="flex flex-col flex-1 p-4">
+      <div className="flex flex-col flex-1 p-3">
         <div className="flex justify-between items-start mb-1">
           <div className="flex items-center gap-2 text-sm font-semibold" style={{ color: platformInfo?.color }}>
             {platformInfo?.icon}
@@ -108,11 +108,11 @@ export default function PostCard({ post, onTagClick, onBoom, onBoomersClick }: P
           <time className="text-xs text-muted-foreground">{getTimeAgo(post.timestamp)}</time>
         </div>
 
-        <h3 className="font-bold text-lg leading-tight mb-2 group-hover:underline">{post.text}</h3>
+        <h3 className="font-bold text-base leading-tight mb-2 group-hover:underline">{post.text}</h3>
 
-        <p className="text-sm text-foreground/80 line-clamp-2 mb-3">{post.caption}</p>
+        <p className="text-sm text-foreground/80 line-clamp-2 mb-2">{post.caption}</p>
 
-        <div className="flex flex-wrap gap-1 mb-4">
+        <div className="flex flex-wrap gap-1 mb-3">
           {post.tags.map((tag, index) => (
             <Badge
               key={tag}
