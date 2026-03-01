@@ -1,12 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { platforms } from '@/lib/data.tsx';
 import type { Post } from '@/lib/types';
@@ -80,64 +75,61 @@ export default function PostCard({ post, onTagClick, onBoom, onBoomersClick }: P
   };
 
   return (
-    <>
-      <Card
-        onClick={handleCardClick}
-        className={cn(
-          'overflow-hidden shadow-sm border flex flex-col cursor-pointer transition-colors hover:bg-secondary/50',
-          post.isNew && 'glow-pulse'
+    <Card
+      onClick={handleCardClick}
+      className={cn(
+        'group overflow-hidden shadow-sm border flex flex-col md:flex-row w-full cursor-pointer transition-colors hover:bg-secondary/50',
+        post.isNew && 'glow-pulse'
+      )}
+    >
+      <div className="relative w-full md:w-48 lg:w-64 h-48 md:h-auto shrink-0">
+        {imageError ? (
+          <div className="w-full h-full flex items-center justify-center bg-secondary" style={{color: platformInfo?.color}}>
+            {React.cloneElement(platformInfo?.icon as React.ReactElement, { className: 'w-10 h-10 opacity-50' })}
+          </div>
+        ) : (
+          <Image
+            src={post.media}
+            alt={post.text}
+            fill
+            className="object-cover"
+            data-ai-hint={post.mediaHint}
+            onError={() => setImageError(true)}
+          />
         )}
-      >
-        <CardHeader className="p-4 relative flex-row gap-4 items-start">
-          <div className="w-16 h-16 relative shrink-0">
-            {imageError ? (
-              <div className="w-full h-full flex items-center justify-center rounded-lg bg-secondary text-muted-foreground/50" style={{color: platformInfo?.color}}>
-                  {React.cloneElement(platformInfo?.icon as React.ReactElement, { className: 'w-8 h-8 opacity-50' })}
-              </div>
-            ) : (
-              <Image
-                  src={post.media}
-                  alt={post.text}
-                  fill
-                  className="object-cover rounded-lg"
-                  data-ai-hint={post.mediaHint}
-                  onError={() => setImageError(true)}
-              />
-            )}
-          </div>
+      </div>
 
-          <div className='flex flex-col flex-1'>
-              <div className="flex justify-between items-start mb-2">
-                  <div className="flex items-center gap-2 text-sm font-semibold" style={{ color: platformInfo?.color }}>
-                      {platformInfo?.icon}
-                      <span>{platformInfo?.name}</span>
-                  </div>
-                  <time className="text-xs text-muted-foreground">{getTimeAgo(post.timestamp)}</time>
-              </div>
-              <p className="mb-3 text-sm text-foreground/80 line-clamp-3">{post.caption}</p>
+      <div className="flex flex-col flex-1 p-4">
+        <div className="flex justify-between items-start mb-1">
+          <div className="flex items-center gap-2 text-sm font-semibold" style={{ color: platformInfo?.color }}>
+            {platformInfo?.icon}
+            <span>{platformInfo?.name}</span>
           </div>
-        </CardHeader>
-        
-        <CardContent className="px-4 pb-2 pt-0 mt-auto">
-          <div className="flex flex-wrap gap-1 mb-2">
-            {post.tags.map((tag, index) => (
-              <Badge
-                key={tag}
-                variant="outline"
-                className={cn(
-                  "cursor-pointer font-normal",
-                  getTagColor(index)
-                )}
-                data-tag-badge
-                onClick={(e) => handleTagBadgeClick(e, tag)}
-              >
-                #{tag}
-              </Badge>
-            ))}
-          </div>
-        </CardContent>
-        
-        <CardFooter className="flex justify-between items-center p-4 pt-2">
+          <time className="text-xs text-muted-foreground">{getTimeAgo(post.timestamp)}</time>
+        </div>
+
+        <h3 className="font-bold text-lg leading-tight mb-2 group-hover:underline">{post.text}</h3>
+
+        <p className="text-sm text-foreground/80 line-clamp-2 mb-3">{post.caption}</p>
+
+        <div className="flex flex-wrap gap-1 mb-4">
+          {post.tags.map((tag, index) => (
+            <Badge
+              key={tag}
+              variant="outline"
+              className={cn(
+                "cursor-pointer font-normal",
+                getTagColor(index)
+              )}
+              data-tag-badge
+              onClick={(e) => handleTagBadgeClick(e, tag)}
+            >
+              #{tag}
+            </Badge>
+          ))}
+        </div>
+
+        <div className="flex justify-between items-center mt-auto pt-2 border-t border-dashed">
           <div className="flex items-center gap-4 text-muted-foreground text-sm">
               <button 
                 onClick={(e) => {
@@ -152,7 +144,14 @@ export default function PostCard({ post, onTagClick, onBoom, onBoomersClick }: P
               >
                 <Users className="w-4 h-4" />{post.boomers.toLocaleString()} Boomers
               </button>
-              <span className="flex items-center gap-1 font-semibold"><Zap className="w-4 h-4" />{post.booms.toLocaleString()} Booms</span>
+              <span 
+                className={cn(
+                    "flex items-center gap-1 font-semibold transition-colors",
+                    post.isBoomed ? 'text-boom' : 'text-muted-foreground'
+                )}
+              >
+                <Zap className="w-4 h-4" />{post.booms.toLocaleString()} Booms
+              </span>
           </div>
           <a
             href={post.url}
@@ -163,8 +162,8 @@ export default function PostCard({ post, onTagClick, onBoom, onBoomersClick }: P
           >
             Source <ExternalLink className="w-3.5 h-3.5" />
           </a>
-        </CardFooter>
-      </Card>
-    </>
+        </div>
+      </div>
+    </Card>
   );
 }

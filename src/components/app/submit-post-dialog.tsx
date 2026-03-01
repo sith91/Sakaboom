@@ -214,7 +214,7 @@ export default function SubmitPostDialog({ open, onOpenChange, onPostSubmit }: S
       media: previewData.image,
       mediaHint: previewData.imageHint,
       platform: detectedPlatform as any,
-      text: comment,
+      text: previewData.title,
       caption: comment,
       booms: 1,
       comments: 0,

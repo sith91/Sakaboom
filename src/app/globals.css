@@ -59,12 +59,6 @@
 }
 
 @layer utilities {
-  .masonry-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 1.25rem; /* 20px */
-  }
-
   @keyframes glowPulse {
     0% { box-shadow: 0 0 0 0px hsl(var(--primary) / 0.4); }
     50% { box-shadow: 0 0 8px 8px hsl(var(--primary) / 0.4); }

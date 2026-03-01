@@ -227,7 +227,7 @@ export default function TrendifyHomePage() {
           )}
 
           {displayedPosts.length > 0 ? (
-            <div className="masonry-grid">
+            <div className="flex flex-col gap-4">
               {displayedPosts.map(post => (
                 <PostCard 
                   key={post.id} 
