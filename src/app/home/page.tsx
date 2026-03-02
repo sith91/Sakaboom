@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
 import { Facebook as FacebookIcon } from '@/components/icons';
 import AdvancedFilterDialog from '@/components/app/advanced-filter-dialog';
+import PostDetailDialog from '@/components/app/post-detail-dialog';
 
 
 export default function TrendifyHomePage() {
@@ -24,6 +25,8 @@ export default function TrendifyHomePage() {
   const [hydrated, setHydrated] = useState(false);
   const [user, setUser] = useState<any>(null); // Placeholder for user state
   const [viewingSubmissionsFor, setViewingSubmissionsFor] = useState<Post | null>(null);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [isDetailDialogOpen, setDetailDialogOpen] = useState(false);
 
   const { toast } = useToast();
 
@@ -149,6 +152,16 @@ export default function TrendifyHomePage() {
     );
   };
 
+  const handlePostClick = (post: Post) => {
+    setSelectedPost(post);
+    setDetailDialogOpen(true);
+    
+    // Boom the post when it's viewed in detail.
+    // If viewing submissions, boom the original parent post.
+    const targetPostId = viewingSubmissionsFor ? viewingSubmissionsFor.id : post.id;
+    handleBoom(targetPostId);
+  };
+  
   const handleAddPost = (newPostData: Omit<Post, 'id' | 'boomers' | 'submissions'>) => {
     const existingPost = posts.find(p => p.url === newPostData.url);
 
@@ -241,7 +254,7 @@ export default function TrendifyHomePage() {
                   key={post.id} 
                   post={post}
                   onTagClick={handleTagClick}
-                  onBoom={() => handleBoom(viewingSubmissionsFor ? viewingSubmissionsFor.id : post.id)}
+                  onPostClick={handlePostClick}
                   onBoomersClick={!viewingSubmissionsFor ? handleBoomersClick : undefined}
                 />
               ))}
@@ -295,6 +308,12 @@ export default function TrendifyHomePage() {
         onApplyFilter={handleApplyAdvancedFilter}
         initialTags={advancedTags}
         allTags={allTags}
+      />
+      <PostDetailDialog
+        post={selectedPost}
+        open={isDetailDialogOpen}
+        onOpenChange={setDetailDialogOpen}
+        onTagClick={handleTagClick}
       />
     </div>
   );

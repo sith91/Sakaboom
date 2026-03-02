@@ -16,7 +16,7 @@ import React, { useState } from 'react';
 interface PostCardProps {
   post: Post;
   onTagClick: (tag: string) => void;
-  onBoom?: () => void;
+  onPostClick?: (post: Post) => void;
   onBoomersClick?: (post: Post) => void;
 }
 
@@ -51,7 +51,7 @@ const getTagColor = (index: number) => {
     return tagColorClasses[index % tagColorClasses.length];
 }
 
-export default function PostCard({ post, onTagClick, onBoom, onBoomersClick }: PostCardProps) {
+export default function PostCard({ post, onTagClick, onPostClick, onBoomersClick }: PostCardProps) {
   const platformInfo = platforms[post.platform];
   const [imageError, setImageError] = useState(false);
 
@@ -65,10 +65,11 @@ export default function PostCard({ post, onTagClick, onBoom, onBoomersClick }: P
     ) {
       return;
     }
-    if (onBoom) {
-        onBoom();
+    if (onPostClick) {
+        onPostClick(post);
+    } else {
+        window.open(post.url, '_blank', 'noopener,noreferrer');
     }
-    window.open(post.url, '_blank', 'noopener,noreferrer');
   };
 
   const handleTagBadgeClick = (e: React.MouseEvent, tag: string) => {
