@@ -84,7 +84,7 @@ export default function PostCard({ post, onTagClick, onBoom, onBoomersClick }: P
         post.isNew && 'glow-pulse'
       )}
     >
-      <div className="relative w-full h-40 shrink-0">
+      <div className="relative w-full h-32 shrink-0">
         {imageError ? (
           <div className="w-full h-full flex items-center justify-center bg-secondary" style={{color: platformInfo?.color}}>
             {React.cloneElement(platformInfo?.icon as React.ReactElement, { className: 'w-10 h-10 opacity-50' })}
@@ -101,26 +101,26 @@ export default function PostCard({ post, onTagClick, onBoom, onBoomersClick }: P
         )}
       </div>
 
-      <div className="flex flex-col flex-1 p-3">
+      <div className="flex flex-col flex-1 p-2.5">
         <div className="flex justify-between items-start mb-1">
-          <div className="flex items-center gap-2 text-sm font-semibold" style={{ color: platformInfo?.color }}>
-            {platformInfo?.icon}
+          <div className="flex items-center gap-1.5 text-xs font-semibold" style={{ color: platformInfo?.color }}>
+            {React.cloneElement(platformInfo?.icon as React.ReactElement, { className: 'w-3.5 h-3.5' })}
             <span>{platformInfo?.name}</span>
           </div>
           <time className="text-xs text-muted-foreground">{getTimeAgo(post.timestamp)}</time>
         </div>
 
-        <h3 className="font-bold text-base leading-tight mb-2 group-hover:underline">{post.text}</h3>
+        <h3 className="font-bold text-sm leading-tight mb-1.5 group-hover:underline">{post.text}</h3>
 
-        <p className="text-sm text-foreground/80 line-clamp-2 mb-2">{post.caption}</p>
+        <p className="text-xs text-foreground/80 line-clamp-2 mb-1.5">{post.caption}</p>
 
-        <div className="flex flex-wrap gap-1 mb-3">
-          {post.tags.map((tag, index) => (
+        <div className="flex flex-wrap gap-1 mb-2">
+          {post.tags.slice(0, 3).map((tag, index) => (
             <Badge
               key={tag}
               variant="outline"
               className={cn(
-                "cursor-pointer font-normal",
+                "cursor-pointer font-normal text-[10px] px-1.5 py-0",
                 getTagColor(index)
               )}
               data-tag-badge
@@ -131,8 +131,8 @@ export default function PostCard({ post, onTagClick, onBoom, onBoomersClick }: P
           ))}
         </div>
 
-        <div className="flex justify-between items-center mt-auto pt-2 border-t border-dashed">
-          <div className="flex items-center gap-4 text-muted-foreground text-sm">
+        <div className="flex justify-between items-center mt-auto pt-1.5 border-t border-dashed">
+          <div className="flex items-center gap-3 text-muted-foreground text-xs">
               <button 
                 onClick={(e) => {
                   e.stopPropagation();
@@ -144,7 +144,7 @@ export default function PostCard({ post, onTagClick, onBoom, onBoomersClick }: P
                   onBoomersClick ? "hover:text-primary cursor-pointer" : "cursor-default"
                 )}
               >
-                <Users className="w-4 h-4" />{post.boomers.toLocaleString()} Boomers
+                <Users className="w-3.5 h-3.5" />{post.boomers.toLocaleString()}
               </button>
               <span 
                 className={cn(
@@ -152,7 +152,7 @@ export default function PostCard({ post, onTagClick, onBoom, onBoomersClick }: P
                     post.isBoomed ? 'text-boom' : 'text-muted-foreground'
                 )}
               >
-                <Zap className="w-4 h-4" />{post.booms.toLocaleString()} Booms
+                <Zap className="w-3.5 h-3.5" />{post.booms.toLocaleString()}
               </span>
           </div>
           <a
@@ -162,7 +162,7 @@ export default function PostCard({ post, onTagClick, onBoom, onBoomersClick }: P
             className="flex items-center gap-1 text-xs hover:text-primary"
             onClick={(e) => e.stopPropagation()}
           >
-            Source <ExternalLink className="w-3.5 h-3.5" />
+            Source <ExternalLink className="w-3 h-3" />
           </a>
         </div>
       </div>
