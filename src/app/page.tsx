@@ -31,7 +31,7 @@ export default function LandingPage() {
       <div className="max-w-2xl w-full text-center">
         <div className="flex justify-center items-center gap-4 mb-4">
           <LogoIcon />
-          <h1 className="text-5xl md:text-6xl font-headline font-bold text-primary">
+          <h1 className="text-5xl md:text-6xl font-headline font-bold text-gradient">
             Trendify
           </h1>
         </div>
