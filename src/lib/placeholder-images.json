@@ -71,6 +71,30 @@
       "description": "Default post preview image",
       "imageUrl": "https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxhYnN0cmFjdHxlbnwwfHx8fDE3NjU2NDI2NTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "abstract"
+    },
+    {
+      "id": "13",
+      "description": "Futuristic AI cityscape",
+      "imageUrl": "https://picsum.photos/seed/13/600/400",
+      "imageHint": "AI cityscape"
+    },
+    {
+      "id": "14",
+      "description": "AI generated video still",
+      "imageUrl": "https://picsum.photos/seed/14/600/400",
+      "imageHint": "AI video"
+    },
+    {
+      "id": "15",
+      "description": "Eiffel Tower in Paris",
+      "imageUrl": "https://picsum.photos/seed/15/600/400",
+      "imageHint": "Eiffel Tower"
+    },
+    {
+      "id": "16",
+      "description": "Tech article illustration",
+      "imageUrl": "https://picsum.photos/seed/16/600/400",
+      "imageHint": "tech article"
     }
   ]
 }

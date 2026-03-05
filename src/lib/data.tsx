@@ -217,6 +217,90 @@ export const initialPosts: Post[] = [
     location: "Tokyo, Japan",
     likes: "4.3k"
   },
+  {
+    id: 8,
+    media: findImage('13').imageUrl,
+    mediaHint: findImage('13').imageHint,
+    platform: "openart",
+    text: "Futuristic Cityscape created with OpenArt",
+    caption: "Exploring the creative possibilities of generative AI. This piece was generated on OpenArt with just a few text prompts. The future is here! #AIArt #GenerativeAI #OpenArt #DigitalArt",
+    booms: 650,
+    boomers: 1,
+    comments: 120,
+    submitter: "ai_enthusiast",
+    isVerified: false,
+    tags: ["AI", "GenerativeArt", "OpenArt", "DigitalArt", "Futurism"],
+    url: "https://openart.ai/artwork/12345",
+    isNew: true,
+    isBoomed: false,
+    hasVideo: false,
+    shares: 55,
+    timestamp: new Date(Date.now() - 9000000), // 2.5 hours ago
+    submissions: createSubmissions("ai_enthusiast", "Exploring the creative possibilities of generative AI. This piece was generated on OpenArt with just a few text prompts. The future is here! #AIArt #GenerativeAI #OpenArt #DigitalArt", new Date(Date.now() - 9000000))
+  },
+  {
+    id: 9,
+    media: findImage('14').imageUrl,
+    mediaHint: findImage('14').imageHint,
+    platform: "higgsfield",
+    text: "Short film 'Starlight' animated with Higgsfield",
+    caption: "Incredible what's possible now. Animated this entire short using Higgsfield's video generation tools. Mind-blowing results from simple text prompts. #Higgsfield #AIVideo #Animation #TextToVideo",
+    booms: 780,
+    boomers: 1,
+    comments: 150,
+    submitter: "video_creator",
+    isVerified: true,
+    tags: ["AI", "Video", "Higgsfield", "Animation", "ShortFilm"],
+    url: "https://higgsfield.ai/v/67890",
+    isNew: false,
+    isBoomed: false,
+    hasVideo: true,
+    shares: 90,
+    timestamp: new Date(Date.now() - 64800000), // 18 hours ago
+    submissions: createSubmissions("video_creator", "Incredible what's possible now. Animated this entire short using Higgsfield's video generation tools. Mind-blowing results from simple text prompts. #Higgsfield #AIVideo #Animation #TextToVideo", new Date(Date.now() - 64800000))
+  },
+  {
+    id: 10,
+    media: findImage('15').imageUrl,
+    mediaHint: findImage('15').imageHint,
+    platform: "location",
+    text: "Eiffel Tower, Paris - A must-see landmark",
+    caption: "The iconic Eiffel Tower in Paris. A breathtaking sight, especially at night when it sparkles. Planning a trip? Don't miss this spot! #Paris #EiffelTower #Travel #France #Landmark",
+    booms: 990,
+    boomers: 1,
+    comments: 210,
+    submitter: "paris_lover",
+    isVerified: false,
+    tags: ["Travel", "Paris", "France", "Landmark", "Tourism"],
+    url: "https://www.google.com/maps/place/Eiffel+Tower",
+    isNew: false,
+    isBoomed: false,
+    hasVideo: false,
+    shares: 110,
+    timestamp: new Date(Date.now() - 345600000), // 4 days ago
+    submissions: createSubmissions("paris_lover", "The iconic Eiffel Tower in Paris. A breathtaking sight, especially at night when it sparkles. Planning a trip? Don't miss this spot! #Paris #EiffelTower #Travel #France #Landmark", new Date(Date.now() - 345600000))
+  },
+  {
+    id: 11,
+    media: findImage('16').imageUrl,
+    mediaHint: findImage('16').imageHint,
+    platform: "unknown",
+    text: "The Rise of People-Powered Search Engines",
+    caption: "Fascinating article on The Verge about how community-driven platforms are changing the way we discover content online. Is this the future of search? #Tech #SearchEngine #Community #Web3",
+    booms: 550,
+    boomers: 1,
+    comments: 95,
+    submitter: "web_innovator",
+    isVerified: false,
+    tags: ["Technology", "Search", "Web", "Community", "FutureTech"],
+    url: "https://www.theverge.com/2024/1/1/12345678/people-powered-search-engine-future",
+    isNew: true,
+    isBoomed: false,
+    hasVideo: false,
+    shares: 45,
+    timestamp: new Date(Date.now() - 21600000), // 6 hours ago
+    submissions: createSubmissions("web_innovator", "Fascinating article on The Verge about how community-driven platforms are changing the way we discover content online. Is this the future of search? #Tech #SearchEngine #Community #Web3", new Date(Date.now() - 21600000))
+  }
 ];
 
 
