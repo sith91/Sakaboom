@@ -1,7 +1,9 @@
 import type { LucideIcon } from 'lucide-react';
 import type { Timestamp } from 'firebase/firestore';
 
-export type PlatformId = 'instagram' | 'twitter' | 'youtube' | 'tiktok' | 'facebook' | 'linkedin' | 'whatsapp' | 'reddit' | 'weibo' | 'wechat' | 'sharechat' | 'roposo' | 'openart' | 'higgsfield' | 'unknown';
+export type PlatformId = 'instagram' | 'twitter' | 'youtube' | 'tiktok' | 'facebook' | 'linkedin' | 'whatsapp' | 'reddit' | 'weibo' | 'wechat' | 'sharechat' | 'roposo' | 'openart' | 'higgsfield' | 'location' | 'unknown';
+
+export type PlatformCategory = 'social' | 'ai' | 'web' | 'location';
 
 export interface Platform {
   id: PlatformId;
@@ -9,6 +11,7 @@ export interface Platform {
   icon: React.ReactNode;
   color: string;
   gradient?: string;
+  category: PlatformCategory;
 }
 
 export interface Submission {

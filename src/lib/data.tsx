@@ -11,24 +11,26 @@ import {
   GraduationCap,
   Link2,
   BrainCircuit,
+  MapPin,
 } from 'lucide-react';
 import { Instagram, Twitter, Youtube, Tiktok, Facebook, Linkedin, Weibo, WeChat, ShareChat, Roposo } from '@/components/icons';
 
 
 export const platforms: Record<string, Platform> = {
-  instagram: { id: 'instagram', name: 'Instagram', icon: <Instagram className="w-4 h-4"/>, color: '#E4405F', gradient: 'linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D)' },
-  twitter: { id: 'twitter', name: 'Twitter/X', icon: <Twitter className="w-4 h-4" />, color: '#1DA1F2' },
-  youtube: { id: 'youtube', name: 'YouTube', icon: <Youtube className="w-4 h-4" />, color: '#FF0000' },
-  tiktok: { id: 'tiktok', name: 'TikTok', icon: <Tiktok className="w-4 h-4" />, color: '#000000' },
-  facebook: { id: 'facebook', name: 'Facebook', icon: <Facebook className="w-4 h-4" />, color: '#1877F2' },
-  linkedin: { id: 'linkedin', name: 'LinkedIn', icon: <Linkedin className="w-4 h-4" />, color: '#0A66C2' },
-  weibo: { id: 'weibo', name: 'Weibo', icon: <Weibo className="w-4 h-4" />, color: '#df2029' },
-  wechat: { id: 'wechat', name: 'WeChat', icon: <WeChat className="w-4 h-4" />, color: '#09B83E' },
-  sharechat: { id: 'sharechat', name: 'ShareChat', icon: <ShareChat className="w-4 h-4" />, color: '#5F259F' },
-  roposo: { id: 'roposo', name: 'Roposo', icon: <Roposo className="w-4 h-4" />, color: '#000000' },
-  openart: { id: 'openart', name: 'OpenArt', icon: <BrainCircuit className="w-4 h-4" />, color: '#3B82F6' },
-  higgsfield: { id: 'higgsfield', name: 'Higgsfield', icon: <BrainCircuit className="w-4 h-4" />, color: '#D946EF' },
-  unknown: { id: 'unknown', name: 'Website', icon: <Link2 className="w-4 h-4" />, color: '#808080' },
+  instagram: { id: 'instagram', name: 'Instagram', icon: <Instagram className="w-4 h-4"/>, color: '#E4405F', gradient: 'linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D)', category: 'social' },
+  twitter: { id: 'twitter', name: 'Twitter/X', icon: <Twitter className="w-4 h-4" />, color: '#1DA1F2', category: 'social' },
+  youtube: { id: 'youtube', name: 'YouTube', icon: <Youtube className="w-4 h-4" />, color: '#FF0000', category: 'social' },
+  tiktok: { id: 'tiktok', name: 'TikTok', icon: <Tiktok className="w-4 h-4" />, color: '#000000', category: 'social' },
+  facebook: { id: 'facebook', name: 'Facebook', icon: <Facebook className="w-4 h-4" />, color: '#1877F2', category: 'social' },
+  linkedin: { id: 'linkedin', name: 'LinkedIn', icon: <Linkedin className="w-4 h-4" />, color: '#0A66C2', category: 'social' },
+  weibo: { id: 'weibo', name: 'Weibo', icon: <Weibo className="w-4 h-4" />, color: '#df2029', category: 'social' },
+  wechat: { id: 'wechat', name: 'WeChat', icon: <WeChat className="w-4 h-4" />, color: '#09B83E', category: 'social' },
+  sharechat: { id: 'sharechat', name: 'ShareChat', icon: <ShareChat className="w-4 h-4" />, color: '#5F259F', category: 'social' },
+  roposo: { id: 'roposo', name: 'Roposo', icon: <Roposo className="w-4 h-4" />, color: '#000000', category: 'social' },
+  openart: { id: 'openart', name: 'OpenArt', icon: <BrainCircuit className="w-4 h-4" />, color: '#3B82F6', category: 'ai' },
+  higgsfield: { id: 'higgsfield', name: 'Higgsfield', icon: <BrainCircuit className="w-4 h-4" />, color: '#D946EF', category: 'ai' },
+  location: { id: 'location', name: 'Location', icon: <MapPin className="w-4 h-4" />, color: '#34A853', category: 'location' },
+  unknown: { id: 'unknown', name: 'Website', icon: <Link2 className="w-4 h-4" />, color: '#808080', category: 'web' },
 };
 
 const findImage = (id: string) => {

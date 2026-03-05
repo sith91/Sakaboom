@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { ArrowLeft, Plus, Search, User, X, Zap } from 'lucide-react';
+import { ArrowLeft, Plus, Search, User, X, Zap, MapPin, Share2, BrainCircuit, Globe } from 'lucide-react';
 import { initialPosts } from '@/lib/data';
-import type { Post, Submission } from '@/lib/types';
+import type { Post, Submission, PlatformCategory } from '@/lib/types';
 import AppHeader from '@/components/app/header';
 import PostCard from '@/components/app/post-card';
 import SubmitPostDialog from '@/components/app/submit-post-dialog';
@@ -13,6 +13,8 @@ import { Badge } from '@/components/ui/badge';
 import { Facebook as FacebookIcon } from '@/components/icons';
 import AdvancedFilterDialog from '@/components/app/advanced-filter-dialog';
 import PostDetailDialog from '@/components/app/post-detail-dialog';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { platforms } from '@/lib/data';
 
 
 export default function TrendifyHomePage() {
@@ -27,6 +29,7 @@ export default function TrendifyHomePage() {
   const [viewingSubmissionsFor, setViewingSubmissionsFor] = useState<Post | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isDetailDialogOpen, setDetailDialogOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<PlatformCategory | 'all'>('all');
 
   const { toast } = useToast();
 
@@ -73,6 +76,14 @@ export default function TrendifyHomePage() {
 
     let filteredPosts = [...posts];
     
+    // Tab-based filtering
+    if (activeTab !== 'all') {
+      filteredPosts = filteredPosts.filter(post => {
+        const platformInfo = platforms[post.platform];
+        return platformInfo?.category === activeTab;
+      });
+    }
+
     // Advanced Tag Search (All tags must match)
     if (advancedTags.length > 0) {
       filteredPosts = filteredPosts.filter(post => 
@@ -88,7 +99,6 @@ export default function TrendifyHomePage() {
       filteredPosts = filteredPosts.filter(post =>
         post.text.toLowerCase().includes(lowercasedQuery) ||
         (post.caption && post.caption.toLowerCase().includes(lowercasedQuery)) ||
-        post.submitter.toLowerCase().includes(lowercasedQuery) ||
         post.tags.some(tag => tag.toLowerCase().includes(lowercasedQuery))
       );
     }
@@ -104,7 +114,7 @@ export default function TrendifyHomePage() {
           return scoreB - scoreA;
       }
     });
-  }, [posts, searchQuery, sortMethod, advancedTags, viewingSubmissionsFor]);
+  }, [posts, searchQuery, sortMethod, advancedTags, viewingSubmissionsFor, activeTab]);
   
   const handleApplyAdvancedFilter = (tags: string[]) => {
     setAdvancedTags(tags);
@@ -235,6 +245,18 @@ export default function TrendifyHomePage() {
             )}
           </div>
           
+          {!viewingSubmissionsFor && (
+            <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="w-full mb-5">
+              <TabsList className="grid w-full grid-cols-5">
+                  <TabsTrigger value="all">All</TabsTrigger>
+                  <TabsTrigger value="social"><Share2 className="w-4 h-4 mr-2" />Social</TabsTrigger>
+                  <TabsTrigger value="ai"><BrainCircuit className="w-4 h-4 mr-2" />AI</TabsTrigger>
+                  <TabsTrigger value="web"><Globe className="w-4 h-4 mr-2" />Web</TabsTrigger>
+                  <TabsTrigger value="location"><MapPin className="w-4 h-4 mr-2" />Location</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          )}
+
           {advancedTags.length > 0 && !viewingSubmissionsFor && (
              <div className="mb-4 flex items-center gap-2 flex-wrap">
                 <h3 className="text-sm font-medium">Active Filters:</h3>
