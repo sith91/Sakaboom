@@ -24,12 +24,12 @@ interface PostDetailDialogProps {
 }
 
 const tagColorClasses = [
-  'border-sky-500 text-sky-600 hover:bg-sky-50 bg-sky-50/50',
-  'border-emerald-500 text-emerald-600 hover:bg-emerald-50 bg-emerald-50/50',
-  'border-amber-500 text-amber-600 hover:bg-amber-50 bg-amber-50/50',
-  'border-violet-500 text-violet-600 hover:bg-violet-50 bg-violet-50/50',
-  'border-pink-500 text-pink-600 hover:bg-pink-50 bg-pink-50/50',
-  'border-indigo-500 text-indigo-600 hover:bg-indigo-50 bg-indigo-50/50',
+  'border-sky-500 text-sky-400 hover:bg-sky-950 bg-sky-950/50',
+  'border-emerald-500 text-emerald-400 hover:bg-emerald-950 bg-emerald-950/50',
+  'border-amber-500 text-amber-400 hover:bg-amber-950 bg-amber-950/50',
+  'border-violet-500 text-violet-400 hover:bg-violet-950 bg-violet-950/50',
+  'border-pink-500 text-pink-400 hover:bg-pink-950 bg-pink-950/50',
+  'border-indigo-500 text-indigo-400 hover:bg-indigo-950 bg-indigo-950/50',
 ];
 
 const getTagColor = (index: number) => {
