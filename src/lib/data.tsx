@@ -10,6 +10,7 @@ import {
   Plane,
   GraduationCap,
   Link2,
+  BrainCircuit,
 } from 'lucide-react';
 import { Instagram, Twitter, Youtube, Tiktok, Facebook, Linkedin, Weibo, WeChat, ShareChat, Roposo } from '@/components/icons';
 
@@ -25,6 +26,8 @@ export const platforms: Record<string, Platform> = {
   wechat: { id: 'wechat', name: 'WeChat', icon: <WeChat className="w-4 h-4" />, color: '#09B83E' },
   sharechat: { id: 'sharechat', name: 'ShareChat', icon: <ShareChat className="w-4 h-4" />, color: '#5F259F' },
   roposo: { id: 'roposo', name: 'Roposo', icon: <Roposo className="w-4 h-4" />, color: '#000000' },
+  openart: { id: 'openart', name: 'OpenArt', icon: <BrainCircuit className="w-4 h-4" />, color: '#3B82F6' },
+  higgsfield: { id: 'higgsfield', name: 'Higgsfield', icon: <BrainCircuit className="w-4 h-4" />, color: '#D946EF' },
   unknown: { id: 'unknown', name: 'Website', icon: <Link2 className="w-4 h-4" />, color: '#808080' },
 };
 

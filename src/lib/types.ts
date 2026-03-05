@@ -1,7 +1,7 @@
 import type { LucideIcon } from 'lucide-react';
 import type { Timestamp } from 'firebase/firestore';
 
-export type PlatformId = 'instagram' | 'twitter' | 'youtube' | 'tiktok' | 'facebook' | 'linkedin' | 'whatsapp' | 'reddit' | 'weibo' | 'wechat' | 'sharechat' | 'roposo' | 'unknown';
+export type PlatformId = 'instagram' | 'twitter' | 'youtube' | 'tiktok' | 'facebook' | 'linkedin' | 'whatsapp' | 'reddit' | 'weibo' | 'wechat' | 'sharechat' | 'roposo' | 'openart' | 'higgsfield' | 'unknown';
 
 export interface Platform {
   id: PlatformId;
