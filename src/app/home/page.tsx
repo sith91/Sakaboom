@@ -33,6 +33,30 @@ export default function TrendifyHomePage() {
 
   useEffect(() => {
     setHydrated(true);
+
+    const params = new URLSearchParams(window.location.search);
+    const viewSubmissionsId = params.get('viewSubmissions');
+    const tagFromParam = params.get('tags');
+    const queryFromParam = params.get('q');
+    const sortFromParam = params.get('sort');
+    const showFilter = params.get('showFilter');
+
+    if (viewSubmissionsId) {
+      const postToView = initialPosts.find(p => p.id === parseInt(viewSubmissionsId));
+      if (postToView) setViewingSubmissionsFor(postToView);
+    }
+    if (tagFromParam) {
+      setAdvancedTags(tagFromParam.split(','));
+    }
+    if (queryFromParam) {
+      setSearchQuery(queryFromParam);
+    }
+    if (sortFromParam) {
+      setSortMethod(sortFromParam);
+    }
+    if(showFilter === 'true') {
+        setFilterDialogOpen(true);
+    }
   }, []);
 
   const handleGoogleSignIn = () => {

@@ -1,7 +1,7 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, LogIn, UserPlus, LogOut, LayoutDashboard, X, User } from 'lucide-react';
+import { Search, LogIn, UserPlus, LogOut, LayoutDashboard, X, User, Globe } from 'lucide-react';
 import Link from 'next/link';
 import { LogoIcon, Facebook as FacebookIcon } from '@/components/icons';
 import { useToast } from '@/hooks/use-toast';
@@ -100,6 +100,18 @@ export default function AppHeader({
           {/* Mobile Search Trigger */}
           <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileSearchOpen(true)}>
             <Search />
+          </Button>
+
+          <Button variant="outline" asChild className="hidden md:flex">
+            <Link href="/explore">
+              <Globe className="w-5 h-5 mr-2" />
+              Explore All
+            </Link>
+          </Button>
+           <Button variant="ghost" size="icon" asChild className="md:hidden">
+            <Link href="/explore">
+              <Globe className="w-5 h-5" />
+            </Link>
           </Button>
           
           <Popover>
