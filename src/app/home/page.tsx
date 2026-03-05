@@ -13,7 +13,6 @@ import { Badge } from '@/components/ui/badge';
 import { Facebook as FacebookIcon } from '@/components/icons';
 import AdvancedFilterDialog from '@/components/app/advanced-filter-dialog';
 import PostDetailDialog from '@/components/app/post-detail-dialog';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { platforms } from '@/lib/data';
 
 
@@ -29,7 +28,6 @@ export default function TrendifyHomePage() {
   const [viewingSubmissionsFor, setViewingSubmissionsFor] = useState<Post | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isDetailDialogOpen, setDetailDialogOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<PlatformCategory | 'all'>('all');
 
   const { toast } = useToast();
 
@@ -61,32 +59,30 @@ export default function TrendifyHomePage() {
       setViewingSubmissionsFor(null);
   };
 
-  const displayedPosts = useMemo(() => {
-    if (viewingSubmissionsFor) {
-        const parentPost = posts.find(p => p.id === viewingSubmissionsFor.id) || viewingSubmissionsFor;
-        return parentPost.submissions.map((submission, index) => ({
-            ...parentPost,
-            id: parentPost.id * 1000 + index, // Create a unique ID for the key
-            caption: submission.description,
-            timestamp: submission.timestamp,
-            submitter: submission.submitter,
-            submissions: [submission], // The "submission" for this card is just itself
-        })).sort((a,b) => b.timestamp.getTime() - a.timestamp.getTime());
-    }
-
-    let filteredPosts = [...posts];
+  const submissionViewPosts = useMemo(() => {
+    if (!viewingSubmissionsFor) return null;
     
-    // Tab-based filtering
-    if (activeTab !== 'all') {
-      filteredPosts = filteredPosts.filter(post => {
-        const platformInfo = platforms[post.platform];
-        return platformInfo?.category === activeTab;
-      });
-    }
+    const parentPost = posts.find(p => p.id === viewingSubmissionsFor.id) || viewingSubmissionsFor;
+    return parentPost.submissions.map((submission, index) => ({
+        ...parentPost,
+        id: parentPost.id * 1000 + index, // Create a unique ID for the key
+        caption: submission.description,
+        timestamp: submission.timestamp,
+        submitter: submission.submitter,
+        submissions: [submission], // The "submission" for this card is just itself
+    })).sort((a,b) => b.timestamp.getTime() - a.timestamp.getTime());
+  }, [viewingSubmissionsFor, posts]);
+
+  const hasActiveFilter = useMemo(() => searchQuery.length > 0 || advancedTags.length > 0, [searchQuery, advancedTags]);
+
+  const filteredPosts = useMemo(() => {
+    if (!hasActiveFilter) return [];
+    
+    let filtered = [...posts];
 
     // Advanced Tag Search (All tags must match)
     if (advancedTags.length > 0) {
-      filteredPosts = filteredPosts.filter(post => 
+      filtered = filtered.filter(post => 
         advancedTags.every(advTag => 
           post.tags.some(postTag => postTag.toLowerCase().includes(advTag.toLowerCase()))
         )
@@ -96,14 +92,14 @@ export default function TrendifyHomePage() {
     // Simple Search (Any field can match)
     if (searchQuery) {
       const lowercasedQuery = searchQuery.toLowerCase();
-      filteredPosts = filteredPosts.filter(post =>
+      filtered = filtered.filter(post =>
         post.text.toLowerCase().includes(lowercasedQuery) ||
         (post.caption && post.caption.toLowerCase().includes(lowercasedQuery)) ||
         post.tags.some(tag => tag.toLowerCase().includes(lowercasedQuery))
       );
     }
-
-    return filteredPosts.sort((a, b) => {
+    
+    return filtered.sort((a, b) => {
       switch (sortMethod) {
         case 'newest': return b.timestamp.getTime() - a.timestamp.getTime();
         case 'booms': return b.booms - a.booms;
@@ -114,7 +110,33 @@ export default function TrendifyHomePage() {
           return scoreB - scoreA;
       }
     });
-  }, [posts, searchQuery, sortMethod, advancedTags, viewingSubmissionsFor, activeTab]);
+
+  }, [posts, searchQuery, sortMethod, advancedTags, hasActiveFilter]);
+
+  const categories: { id: PlatformCategory; name: string; icon: React.ReactNode }[] = [
+      { id: 'social', name: 'Social Media', icon: <Share2 className="w-5 h-5 mr-2" /> },
+      { id: 'ai', name: 'AI Community', icon: <BrainCircuit className="w-5 h-5 mr-2" /> },
+      { id: 'web', name: 'Web Links', icon: <Globe className="w-5 h-5 mr-2" /> },
+      { id: 'location', name: 'Locations', icon: <MapPin className="w-5 h-5 mr-2" /> },
+  ];
+
+  const postsByCategory = useMemo(() => {
+    if (hasActiveFilter || viewingSubmissionsFor) return null;
+
+    const grouped: Record<string, Post[]> = { social: [], ai: [], web: [], location: [] };
+    const allPostsSorted = [...posts].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+
+    for (const post of allPostsSorted) {
+      const platformInfo = platforms[post.platform];
+      if (platformInfo) {
+        const category = platformInfo.category as PlatformCategory;
+        if (grouped[category] && grouped[category].length < 4) {
+          grouped[category].push(post);
+        }
+      }
+    }
+    return grouped;
+  }, [posts, hasActiveFilter, viewingSubmissionsFor]);
   
   const handleApplyAdvancedFilter = (tags: string[]) => {
     setAdvancedTags(tags);
@@ -217,8 +239,64 @@ export default function TrendifyHomePage() {
     return null;
   }
 
-  const pageTitle = viewingSubmissionsFor ? `Submissions for Link` : "What's Trending Now";
-  const pageSubtitle = viewingSubmissionsFor ? `${viewingSubmissionsFor.submissions.length} perspectives on the same story.` : "The latest posts, powered by people like you.";
+  let pageTitle: string;
+  let pageSubtitle: string;
+
+  if (viewingSubmissionsFor) {
+    pageTitle = 'Submissions for Link';
+    pageSubtitle = `${viewingSubmissionsFor.submissions.length} perspectives on the same story.`;
+  } else if (hasActiveFilter) {
+    pageTitle = 'Filter Results';
+    pageSubtitle = `Found ${filteredPosts.length} posts matching your criteria.`;
+  } else {
+    pageTitle = "What's Trending Now";
+    pageSubtitle = "The latest posts, powered by people like you.";
+  }
+
+  const renderPosts = (postsToRender: Post[]) => {
+    if (postsToRender.length > 0) {
+      return (
+        <div className="masonry-grid">
+          {postsToRender.map(post => (
+            <PostCard 
+              key={post.id} 
+              post={post}
+              onTagClick={handleTagClick}
+              onPostClick={handlePostClick}
+              onBoomersClick={!viewingSubmissionsFor ? handleBoomersClick : undefined}
+            />
+          ))}
+        </div>
+      );
+    }
+    return (
+      <div className="flex flex-col items-center justify-center text-center py-20 bg-card rounded-lg">
+        {user ? (
+          <>
+            <Search className="w-16 h-16 text-muted-foreground/50 mb-4" />
+            <h3 className="text-xl font-bold">No Posts Found</h3>
+            <p className="text-muted-foreground mt-2">Try adjusting your search or filter settings.</p>
+          </>
+        ) : (
+          <div className="flex flex-col items-center justify-center text-center">
+            <User className="w-16 h-16 text-muted-foreground/50 mb-4" />
+            <h3 className="text-xl font-bold">Welcome to Trendify!</h3>
+            <p className="text-muted-foreground mt-2">Log in to see the hottest trends and boom your favorite posts.</p>
+            <div className="flex gap-4 mt-4">
+                <Button onClick={handleGoogleSignIn} variant="secondary">
+                  <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 381.5 512 244 512 111.8 512 0 400.2 0 261.8 0 123.8 111.8 12.5 244 12.5c72.6 0 134.3 29.3 179.9 74.5L356.1 154.3c-34.4-33.4-85.3-54.3-138.2-54.3-109.1 0-198.3 88.3-198.3 197.8s89.2 197.8 198.3 197.8c114.9 0 181.7-83.3 185.5-161.4H244V261.8h244z"></path></svg>
+                  Sign Up with Google
+                </Button>
+                <Button onClick={handleFacebookSignIn} variant="secondary">
+                    <FacebookIcon className="mr-2 h-4 w-4" />
+                    Sign Up with Facebook
+                </Button>
+            </div>
+        </div>
+        )}
+    </div>
+    );
+  };
 
   return (
     <div className="bg-background min-h-screen text-foreground">
@@ -245,19 +323,7 @@ export default function TrendifyHomePage() {
             )}
           </div>
           
-          {!viewingSubmissionsFor && (
-            <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="w-full mb-5">
-              <TabsList className="grid w-full grid-cols-5">
-                  <TabsTrigger value="all">All</TabsTrigger>
-                  <TabsTrigger value="social"><Share2 className="w-4 h-4 mr-2" />Social</TabsTrigger>
-                  <TabsTrigger value="ai"><BrainCircuit className="w-4 h-4 mr-2" />AI</TabsTrigger>
-                  <TabsTrigger value="web"><Globe className="w-4 h-4 mr-2" />Web</TabsTrigger>
-                  <TabsTrigger value="location"><MapPin className="w-4 h-4 mr-2" />Location</TabsTrigger>
-              </TabsList>
-            </Tabs>
-          )}
-
-          {advancedTags.length > 0 && !viewingSubmissionsFor && (
+          {hasActiveFilter && advancedTags.length > 0 && !viewingSubmissionsFor && (
              <div className="mb-4 flex items-center gap-2 flex-wrap">
                 <h3 className="text-sm font-medium">Active Filters:</h3>
                 {advancedTags.map(tag => (
@@ -269,45 +335,33 @@ export default function TrendifyHomePage() {
             </div>
           )}
 
-          {displayedPosts.length > 0 ? (
-            <div className="masonry-grid">
-              {displayedPosts.map(post => (
-                <PostCard 
-                  key={post.id} 
-                  post={post}
-                  onTagClick={handleTagClick}
-                  onPostClick={handlePostClick}
-                  onBoomersClick={!viewingSubmissionsFor ? handleBoomersClick : undefined}
-                />
-              ))}
+          {viewingSubmissionsFor && submissionViewPosts ? renderPosts(submissionViewPosts) :
+           hasActiveFilter ? renderPosts(filteredPosts) :
+           postsByCategory ? (
+            <div className="space-y-12">
+              {categories.map(category => {
+                const categoryPosts = postsByCategory[category.id as PlatformCategory];
+                if (!categoryPosts || categoryPosts.length === 0) return null;
+                
+                return (
+                  <section key={category.id}>
+                      <h2 className="text-xl font-headline font-bold mb-4 flex items-center">{category.icon} {category.name}</h2>
+                      <div className="masonry-grid">
+                          {categoryPosts.map(post => (
+                              <PostCard 
+                                key={post.id} 
+                                post={post}
+                                onTagClick={handleTagClick}
+                                onPostClick={handlePostClick}
+                                onBoomersClick={handleBoomersClick}
+                              />
+                          ))}
+                      </div>
+                  </section>
+                )
+              })}
             </div>
-          ) : (
-             <div className="flex flex-col items-center justify-center text-center py-20 bg-card rounded-lg">
-                {user ? (
-                  <>
-                    <Search className="w-16 h-16 text-muted-foreground/50 mb-4" />
-                    <h3 className="text-xl font-bold">No Posts Found</h3>
-                    <p className="text-muted-foreground mt-2">Try adjusting your search or filter settings.</p>
-                  </>
-                ) : (
-                  <div className="flex flex-col items-center justify-center text-center">
-                    <User className="w-16 h-16 text-muted-foreground/50 mb-4" />
-                    <h3 className="text-xl font-bold">Welcome to Trendify!</h3>
-                    <p className="text-muted-foreground mt-2">Log in to see the hottest trends and boom your favorite posts.</p>
-                    <div className="flex gap-4 mt-4">
-                        <Button onClick={handleGoogleSignIn} variant="secondary">
-                          <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 381.5 512 244 512 111.8 512 0 400.2 0 261.8 0 123.8 111.8 12.5 244 12.5c72.6 0 134.3 29.3 179.9 74.5L356.1 154.3c-34.4-33.4-85.3-54.3-138.2-54.3-109.1 0-198.3 88.3-198.3 197.8s89.2 197.8 198.3 197.8c114.9 0 181.7-83.3 185.5-161.4H244V261.8h244z"></path></svg>
-                          Sign Up with Google
-                        </Button>
-                        <Button onClick={handleFacebookSignIn} variant="secondary">
-                            <FacebookIcon className="mr-2 h-4 w-4" />
-                            Sign Up with Facebook
-                        </Button>
-                    </div>
-                </div>
-                )}
-            </div>
-          )}
+           ) : renderPosts([])}
         </main>
       </div>
 
