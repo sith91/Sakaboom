@@ -9,7 +9,6 @@ import {
 import { Post } from '@/lib/types';
 import Image from 'next/image';
 import { platforms } from '@/lib/data';
-import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { ExternalLink } from 'lucide-react';
 import React from 'react';
@@ -24,15 +23,15 @@ interface PostDetailDialogProps {
 }
 
 const tagColorClasses = [
-  'border-sky-500 text-sky-400 hover:bg-sky-950 bg-sky-950/50',
-  'border-emerald-500 text-emerald-400 hover:bg-emerald-950 bg-emerald-950/50',
-  'border-amber-500 text-amber-400 hover:bg-amber-950 bg-amber-950/50',
-  'border-violet-500 text-violet-400 hover:bg-violet-950 bg-violet-950/50',
-  'border-pink-500 text-pink-400 hover:bg-pink-950 bg-pink-950/50',
-  'border-indigo-500 text-indigo-400 hover:bg-indigo-950 bg-indigo-950/50',
+  'violet',
+  'pink',
+  'blue',
+  'green',
+  'amber',
+  'indigo',
 ];
 
-const getTagColor = (index: number) => {
+const getTagColorClass = (index: number) => {
     return tagColorClasses[index % tagColorClasses.length];
 }
 
@@ -91,16 +90,15 @@ export default function PostDetailDialog({ post, open, onOpenChange, onTagClick 
 
             <div>
               <h4 className="text-sm font-semibold mb-2">Flairs</h4>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 {post.tags.map((tag, index) => (
-                  <Badge
+                  <div
                     key={tag}
-                    variant="outline"
-                    className={cn("cursor-pointer font-normal", getTagColor(index))}
+                    className={cn("category-badge", getTagColorClass(index))}
                     onClick={() => handleTagClick(tag)}
                   >
-                    #{tag}
-                  </Badge>
+                    <span>#{tag}</span>
+                  </div>
                 ))}
               </div>
             </div>

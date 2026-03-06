@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { platforms } from '@/lib/data.tsx';
 import type { Post } from '@/lib/types';
 import { cn } from '@/lib/utils';
@@ -38,16 +37,15 @@ function getTimeAgo(timestamp: Date): string {
 }
 
 const tagColorClasses = [
-  'border-sky-500 text-sky-400 hover:bg-sky-950 bg-sky-950/50',
-  'border-emerald-500 text-emerald-400 hover:bg-emerald-950 bg-emerald-950/50',
-  'border-amber-500 text-amber-400 hover:bg-amber-950 bg-amber-950/50',
-  'border-violet-500 text-violet-400 hover:bg-violet-950 bg-violet-950/50',
-  'border-pink-500 text-pink-400 hover:bg-pink-950 bg-pink-950/50',
-  'border-indigo-500 text-indigo-400 hover:bg-indigo-950 bg-indigo-950/50',
+  'violet',
+  'pink',
+  'blue',
+  'green',
+  'amber',
+  'indigo',
 ];
 
-
-const getTagColor = (index: number) => {
+const getTagColorClass = (index: number) => {
     return tagColorClasses[index % tagColorClasses.length];
 }
 
@@ -115,20 +113,16 @@ export default function PostCard({ post, onTagClick, onPostClick, onBoomersClick
 
         <p className="text-xs text-foreground/80 line-clamp-2 mb-1.5">{post.caption}</p>
 
-        <div className="flex flex-wrap gap-1 mb-2">
+        <div className="flex flex-wrap items-center gap-2 mb-2">
           {post.tags.slice(0, 3).map((tag, index) => (
-            <Badge
+            <div
               key={tag}
-              variant="outline"
-              className={cn(
-                "cursor-pointer font-normal text-[10px] px-1.5 py-0",
-                getTagColor(index)
-              )}
+              className={cn("category-badge", getTagColorClass(index))}
               data-tag-badge
               onClick={(e) => handleTagBadgeClick(e, tag)}
             >
-              #{tag}
-            </Badge>
+              <span>#{tag}</span>
+            </div>
           ))}
         </div>
 
