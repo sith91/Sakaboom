@@ -263,8 +263,8 @@ export default function TrendifyHomePage() {
     return null;
   }
 
-  let pageTitle: string;
-  let pageSubtitle: string;
+  let pageTitle: string = '';
+  let pageSubtitle: string = '';
 
   if (viewingSubmissionsFor) {
     pageTitle = 'Submissions for Link';
@@ -272,9 +272,6 @@ export default function TrendifyHomePage() {
   } else if (hasActiveFilter) {
     pageTitle = 'Filter Results';
     pageSubtitle = `Found ${filteredPosts.length} posts matching your criteria.`;
-  } else {
-    pageTitle = "What's Trending Now";
-    pageSubtitle = "The latest posts, powered by people like you.";
   }
 
   const renderPosts = (postsToRender: Post[]) => {
@@ -336,10 +333,12 @@ export default function TrendifyHomePage() {
       <div className="container mx-auto flex max-w-[1400px] flex-col gap-5 p-4 lg:py-5">
         <main className="flex-1">
           <div className="mb-5 flex flex-wrap items-center justify-between gap-y-2">
-            <div>
-              <h1 className="text-2xl font-headline font-bold">{pageTitle}</h1>
-              <p className="text-sm text-muted-foreground flex items-center gap-2"><Zap className="w-4 h-4 text-primary"/> {pageSubtitle}</p>
-            </div>
+            {pageTitle ? (
+              <div>
+                <h1 className="text-2xl font-headline font-bold">{pageTitle}</h1>
+                <p className="text-sm text-muted-foreground flex items-center gap-2"><Zap className="w-4 h-4 text-primary"/> {pageSubtitle}</p>
+              </div>
+            ) : <div />}
              {viewingSubmissionsFor && (
                 <Button onClick={handleBackToFeed} variant="outline">
                     <ArrowLeft className="w-4 h-4 mr-2"/> Back to Main Feed
