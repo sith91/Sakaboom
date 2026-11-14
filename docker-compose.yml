@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  sakaboom-web-node:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      # Links the Next.js Web Node directly to the Local P2P Database Node securely via Docker networking
+      - DATABASE_URL=postgresql://sakaadmin:sakaboom_secure_local@sakaboom-db-node:5432/sakaboom_local
+    depends_on:
+      sakaboom-db-node:
+        condition: service_healthy
+    networks:
+      - sakaboom-mesh
+
+  sakaboom-db-node:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=sakaadmin
+      - POSTGRES_PASSWORD=sakaboom_secure_local
+      - POSTGRES_DB=sakaboom_local
+    ports:
+      - "5432:5432"
+    volumes:
+      - sakaboom_node_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sakaadmin -d sakaboom_local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sakaboom-mesh
+
+volumes:
+  # Persistent storage so a Node operator does not lose their synced data upon restart
+  sakaboom_node_data:
+
+networks:
+  sakaboom-mesh:
+    driver: bridge

@@ -1,0 +1,169 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 262 83% 58%; /* Purple */
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 262 83% 58%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 262 83% 58%; /* Purple */
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 262 83% 58%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-auto-flow: dense;
+    align-items: start;
+    gap: 1.5rem;
+  }
+  @screen sm {
+    .bento-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @screen lg {
+    .bento-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  @screen xl {
+    .bento-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .bento-large {
+    grid-column: span 1;
+  }
+  .bento-wide {
+    grid-column: span 1;
+  }
+  @screen sm {
+    .bento-large {
+      grid-column: span 2;
+    }
+    .bento-wide {
+      grid-column: span 2;
+    }
+  }
+}
+
+@layer components {
+  .category-badge {
+    @apply inline-block cursor-pointer text-white font-headline font-bold uppercase text-xs py-0.5 px-2 rounded-sm whitespace-nowrap transition-transform hover:scale-105;
+    background: linear-gradient(135deg, #6d28d9, #7c3aed);
+    transform: skewX(-11deg);
+    letter-spacing: 0.5px;
+  }
+  .category-badge > span {
+    @apply inline-block;
+    transform: skewX(11deg);
+  }
+  .category-badge.pink {
+    background: linear-gradient(135deg, #d946ef, #ec4899);
+  }
+  .category-badge.blue {
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+  }
+  .category-badge.green {
+    background: linear-gradient(135deg, #10b981, #34d399);
+  }
+  .category-badge.violet {
+    background: linear-gradient(135deg, #6d28d9, #8b5cf6);
+  }
+  .category-badge.amber {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+  }
+  .category-badge.indigo {
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+  }
+}
+
+@layer utilities {
+  @keyframes glowPulse {
+    0% { box-shadow: 0 0 0 0px hsl(var(--primary) / 0.4); }
+    50% { box-shadow: 0 0 8px 8px hsl(var(--primary) / 0.4); }
+    100% { box-shadow: 0 0 0 0px hsl(var(--primary) / 0.4); }
+  }
+
+  .glow-pulse {
+    animation: glowPulse 2s ease-in-out 3;
+  }
+
+  .primary-gradient {
+    background: linear-gradient(45deg, hsl(0, 100%, 50%), hsl(260, 55%, 52%), hsl(190, 100%, 70%));
+  }
+  
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(to right, #ff6b35, #d946ef, #3b82f6);
+  }
+
+  .glass {
+    @apply bg-white/10 backdrop-blur-md border border-white/10 shadow-xl;
+  }
+
+  .glass-dark {
+    @apply bg-black/40 backdrop-blur-xl border border-white/5 shadow-2xl;
+  }
+
+  .boom-glow {
+    box-shadow: 0 0 20px -5px #ff6b35;
+  }
+
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .animate-ticker {
+    animation: ticker 40s linear infinite;
+  }
+}
